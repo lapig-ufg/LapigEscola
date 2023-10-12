@@ -1,0 +1,123 @@
+import { defineStore } from 'pinia'
+
+export const useTemaAmbiental = defineStore('temaAmbiental', {
+  state() {
+    return {
+      tema: 'geologia',
+      bioma: 'cerrado',
+      biomas: {
+        amazonia: {
+          nome: 'Amazônia',
+          descricao:
+            'A Floresta Amazônica é a maior floresta tropical do mundo, abrangendo nove países, incluindo o Brasil. É caracterizada por sua geologia antiga, com solos predominantemente argilosos e ácidos. O clima é equatorial, com alta umidade e chuvas frequentes. O relevo varia de planícies a áreas montanhosas. A hidrografia é marcada por rios vastos, incluindo o Rio Amazonas, tornando-a rica em biodiversidade aquática.',
+          geologia:
+            'A geologia da Amazônia é caracterizada por rochas antigas, incluindo formações pré-cambrianas e cristalinas. Essas rochas antigas desempenharam um papel na formação dos solos argilosos e ácidos que são comuns na região.',
+          solos:
+            'Os solos predominantes na Amazônia são argilosos e ácidos devido à influência das rochas antigas da região. Esses solos têm baixa fertilidade natural, mas a biodiversidade única da floresta ajuda a manter o ciclo de nutrientes.',
+          clima:
+            'O clima da Amazônia é equatorial, caracterizado por temperaturas elevadas e alta umidade ao longo do ano. As chuvas são frequentes, com uma estação chuvosa e uma estação seca bem definidas.',
+          relevo:
+            'O relevo da Amazônia varia de planícies alagadas a áreas montanhosas, com montanhas isoladas e platôs no norte. Grande parte da região é plana, mas também inclui as montanhas das Guianas.',
+          hidrografia:
+            'A hidrografia da Amazônia é rica e dominada por rios vastos, incluindo o icônico Rio Amazonas. A região possui um complexo sistema de rios, igarapés e lagos, que desempenham um papel fundamental na biodiversidade aquática da região.',
+        },
+        cerrado: {
+          nome: 'Cerrado',
+          descricao:
+            'O Cerrado é o segundo maior bioma do Brasil e caracteriza-se por solos variados, incluindo latossolos e vermelhos. O clima é tropical, com estações secas e chuvosas bem definidas. O relevo varia de planícies a chapadas. A hidrografia é composta por rios sazonais e rios perenes.',
+          geologia:
+            'A geologia do Cerrado é marcada por uma diversidade de formações rochosas, incluindo rochas sedimentares, cristalinas e vulcânicas. Essa diversidade geológica contribui para a variedade de solos na região.',
+          solos:
+            'Os solos do Cerrado variam de acordo com a geologia local. Os latossolos, por exemplo, são comuns e têm boa fertilidade natural. Os solos vermelhos também são encontrados em algumas áreas.',
+          clima:
+            'O clima do Cerrado é tropical, com uma estação seca durante o inverno e uma estação chuvosa durante o verão. As temperaturas são elevadas ao longo do ano.',
+          relevo:
+            'O relevo do Cerrado é diversificado, incluindo planícies, chapadas, morros e depressões. As chapadas, como a Chapada dos Veadeiros, são características da região.',
+          hidrografia:
+            'A hidrografia do Cerrado é composta por rios sazonais, que secam durante a estação seca, e rios perenes, que fluem ao longo do ano. As nascentes de importantes rios brasileiros estão localizadas no Cerrado.',
+        },
+        caatinga: {
+          nome: 'Caatinga',
+          descricao:
+            'A Caatinga é um bioma semiárido no nordeste do Brasil, com solos rasos e ácidos. O clima é quente e seco, com chuvas escassas e irregulares. O relevo é geralmente plano. A hidrografia é limitada a rios temporários e açudes durante a estação chuvosa.',
+          geologia:
+            'A geologia da Caatinga é caracterizada por solos rasos e rochas sedimentares. A região possui solos ácidos e pouco desenvolvidos devido à falta de chuvas regulares.',
+          solos:
+            'Os solos da Caatinga são principalmente solos arenosos e pouco férteis devido ao clima árido. A vegetação adaptou-se a essas condições adversas.',
+          clima:
+            'O clima da Caatinga é semiárido, com chuvas escassas e altas temperaturas. A região experimenta uma estação chuvosa curta e intensa, seguida por uma estação seca prolongada.',
+          relevo:
+            'O relevo da Caatinga é geralmente plano, com algumas elevações suaves. A topografia é relativamente uniforme em comparação com outras regiões do Brasil.',
+          hidrografia:
+            'A hidrografia da Caatinga é limitada a rios temporários, que correm apenas durante a estação chuvosa, e açudes que são construídos para armazenar água para uso agrícola.',
+        },
+        mataAtlantica: {
+          nome: 'Mata Atlântica',
+          descricao:
+            'A Mata Atlântica é uma floresta tropical ao longo da costa leste do Brasil. Apresenta solos variados, incluindo argissolos e latossolos. O clima é tropical úmido, com chuvas ao longo do ano. O relevo varia de montanhas a planícies costeiras. A hidrografia é marcada por rios de médio e pequeno porte.',
+          geologia:
+            'A geologia da Mata Atlântica inclui rochas sedimentares e metamórficas. Essas rochas contribuem para a variedade de solos na região, que podem variar de férteis a ácidos.',
+          solos:
+            'Os solos da Mata Atlântica são variados, incluindo argissolos e latossolos, que são geralmente férteis. A vegetação exuberante da Mata Atlântica é suportada por esses solos ricos.',
+          clima:
+            'O clima da Mata Atlântica é tropical úmido, com chuvas ao longo do ano e temperaturas elevadas. A região recebe chuvas intensas durante a estação chuvosa.',
+          relevo:
+            'O relevo da Mata Atlântica varia de montanhas a planícies costeiras. A Serra do Mar é uma característica proeminente da região, com montanhas íngremes e vales profundos.',
+          hidrografia:
+            'A hidrografia da Mata Atlântica é composta por rios de médio e pequeno porte, que muitas vezes correm em vales estreitos. A região possui uma série de rios costeiros e desembocaduras em praias.',
+        },
+        pampa: {
+          nome: 'Pampa',
+          descricao:
+            'O Pampa é um bioma de campos no sul do Brasil, com solos férteis e bem drenados. O clima é temperado, com invernos frios e verões quentes. O relevo é predominantemente plano. A hidrografia é caracterizada por rios e lagos.',
+          geologia:
+            'A geologia do Pampa é marcada por rochas sedimentares e basálticas. Essas rochas contribuem para a fertilidade dos solos na região, tornando-os adequados para a agricultura.',
+          solos:
+            'Os solos do Pampa são geralmente férteis e bem drenados, com alta capacidade de retenção de água. Isso os torna adequados para a agricultura e pastagens.',
+          clima:
+            'O clima do Pampa é temperado, com invernos frios e verões quentes. A região experimenta estações bem definidas ao longo do ano.',
+          relevo:
+            'O relevo do Pampa é predominantemente plano, com áreas de suave ondulação. Não há grandes elevações na região.',
+          hidrografia:
+            'A hidrografia do Pampa é composta por rios e lagos, com uma série de bacias hidrográficas. Os rios da região são usados para abastecimento de água e irrigação.',
+        },
+        pantanal: {
+          nome: 'Pantanal',
+          descricao:
+            'O Pantanal é a maior área úmida do mundo e está localizado na região centro-oeste do Brasil. Os solos são aluviais e alagados. O clima é tropical, com estações secas e chuvosas bem definidas. O relevo é plano e sujeito a inundações sazonais. A hidrografia é dominada por rios e áreas alagadas, tornando-o um importante habitat aquático.',
+          geologia:
+            'A geologia do Pantanal é caracterizada por solos aluviais, que são ricos em nutrientes e sedimentos. Esses solos são formados pelas cheias sazonais dos rios da região.',
+          solos:
+            'Os solos do Pantanal são aluviais e ricos em nutrientes devido às inundações sazonais. Esses solos sustentam uma vegetação diversificada e suportam uma rica biodiversidade.',
+          clima:
+            'O clima do Pantanal é tropical, com uma estação seca durante o inverno e uma estação chuvosa durante o verão. As inundações sazonais são uma característica distintiva do bioma.',
+          relevo:
+            'O relevo do Pantanal é predominantemente plano, com áreas sujeitas a inundações durante a estação chuvosa. Não há grandes elevações na região.',
+          hidrografia:
+            'A hidrografia do Pantanal é dominada por rios, lagoas e áreas alagadas, tornando-o um importante habitat para aves, peixes e outros animais aquáticos. O Rio Paraguai é um dos principais rios da região.',
+        },
+      },
+    }
+  },
+
+  actions: {
+    setTema(tema: string) {
+      this.tema = tema
+    },
+  },
+
+
+
+  getters: {
+    getTema(): string {
+      return this.biomas[this.bioma][this.tema]
+    },
+
+    getBiomaName(): string {
+        return this.biomas[this.bioma]['nome']
+    },
+    getBiomaDescricao(): string {
+        return this.biomas[this.bioma]['descricao']
+    },
+  },
+})

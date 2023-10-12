@@ -24,28 +24,6 @@ useHead({
     <MapsDashboard>
       <template #header>
         <div class="content-section-header">
-          <h2 class="title is-4 is-narrow">
-            Maps 1
-          </h2>
-
-          <Toolbar class="desktop-toolbar">
-            <ToolbarNotification />
-
-            <a
-              class="toolbar-link right-panel-trigger"
-              aria-label="View activity"
-              tabindex="0"
-              role="button"
-              @keydown.space.prevent="panels.setActive('activity')"
-              @click="panels.setActive('activity')"
-            >
-              <i
-                aria-hidden="true"
-                class="iconify"
-                data-icon="feather:grid"
-              />
-            </a>
-          </Toolbar>
         </div>
       </template>
     </MapsDashboard>

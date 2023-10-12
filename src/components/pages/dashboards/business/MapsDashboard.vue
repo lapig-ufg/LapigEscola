@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { type Map, Popup } from 'mapbox-gl'
 import { useThemeColors } from '/@src/composable/useThemeColors'
+import { useTemaAmbiental } from '/@src/stores/temaAmbiental'
 import { useDarkmode } from '/@src/stores/darkmode'
 import 'mapbox-gl/src/css/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
@@ -21,6 +22,9 @@ const popupElement = shallowRef<HTMLElement>()
 const map = shallowRef<Map>()
 const popup = shallowRef<Popup>()
 const geocoder = shallowRef<any>()
+const temaAmbiental = useTemaAmbiental()
+
+
 
 const locations = {
   type: 'FeatureCollection',
@@ -180,6 +184,8 @@ const locations = {
     },
   ],
 } as const
+
+
 
 function loadLayers() {
   if (!map.value) {
@@ -380,9 +386,63 @@ watch(
           data-simplebar
         >
           <!--Title-->
-          <h4 class="content-section-title">
-            Recent Locations
-          </h4>
+          <h3>{{ temaAmbiental.getBiomaName }}</h3>
+
+          <p>{{temaAmbiental.getBiomaDescricao}}</p>
+          <br/>
+          <VField addons>
+            <VControl>
+              <VButton
+                icon="fas fa-align-left"
+                :class="[temaAmbiental.tema === 'geologia'? 'is-active' : '']"
+                @click="temaAmbiental.setTema('geologia')"
+              >
+                Geologia
+              </VButton>
+            </VControl>
+            <VControl>
+              <VButton
+                icon="fas fa-align-center"
+                :class="[temaAmbiental.tema === 'solos'? 'is-active' : '']"
+                @click="temaAmbiental.setTema('solos')"
+              >
+                Solos
+              </VButton>
+            </VControl>
+            <VControl>
+              <VButton 
+                icon="fas fa-align-right"
+                :class="[temaAmbiental.tema === 'clima'? 'is-active' : '']"
+                @click="temaAmbiental.setTema('clima')"
+              >
+                Clima
+              </VButton>
+            </VControl>
+          </VField>
+          <VField addons>
+            <VControl>
+              <VButton 
+                icon="fas fa-align-right"
+                :class="[temaAmbiental.tema === 'relevo'? 'is-active' : '']"
+                @click="temaAmbiental.setTema('relevo')"
+              >
+                Relevo
+              </VButton>
+            </VControl>
+            <VControl>
+              <VButton 
+                icon="fas fa-align-right"
+                :class="[temaAmbiental.tema === 'hidrografia'? 'is-active' : '']"
+                @click="temaAmbiental.setTema('hidrografia')"
+              >
+                Hidrografia
+              </VButton>
+            </VControl>
+          </VField>
+          
+          <div>
+            <p>{{ temaAmbiental.getTema }} </p>
+          </div>
 
           <!--Map Box-->
           <div
