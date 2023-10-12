@@ -1,0 +1,3 @@
+Conforme apontado anteriormente, o escudo cristalino é composto por estruturas conhecidas como crátons e cinturões orogênicos. Os crátons são estruturas muito antigas e bastante estáveis, que se formaram no início e médio Pré-Cambriano, ou seja, há mais de 1 bilhão de anos, e compreendem áreas anteriormente elevadas, mas que foram rebaixadas ao longo do tempo geológico pela atuação da erosão. Nestas áreas predominam rochas muito antigas, geralmente metamórficas (como filitos, quartzitos e xistos – Figura 1), mas com ocorrência também de rochas magmáticas e, em menor proporção, de rochas sedimentares.
+
+![Cerrado Filito](https://s3.lapig.iesa.ufg.br/public/mapbiomasnaescola/cerrado/cerrado-304-Filito.webp "Filito")
