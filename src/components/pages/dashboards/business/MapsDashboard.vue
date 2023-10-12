@@ -390,10 +390,11 @@ watch(
 
           <p>{{temaAmbiental.getBiomaDescricao}}</p>
           <br/>
-          <VField addons>
+          <VField>
             <VControl>
               <VButton
                 icon="fas fa-align-left"
+                fullwidth
                 :class="[temaAmbiental.tema === 'geologia'? 'is-active' : '']"
                 @click="temaAmbiental.setTema('geologia')"
               >
@@ -403,6 +404,7 @@ watch(
             <VControl>
               <VButton
                 icon="fas fa-align-center"
+                fullwidth
                 :class="[temaAmbiental.tema === 'solos'? 'is-active' : '']"
                 @click="temaAmbiental.setTema('solos')"
               >
@@ -412,17 +414,17 @@ watch(
             <VControl>
               <VButton 
                 icon="fas fa-align-right"
+                fullwidth
                 :class="[temaAmbiental.tema === 'clima'? 'is-active' : '']"
                 @click="temaAmbiental.setTema('clima')"
               >
                 Clima
               </VButton>
             </VControl>
-          </VField>
-          <VField addons>
             <VControl>
               <VButton 
                 icon="fas fa-align-right"
+                fullwidth
                 :class="[temaAmbiental.tema === 'relevo'? 'is-active' : '']"
                 @click="temaAmbiental.setTema('relevo')"
               >
@@ -432,6 +434,7 @@ watch(
             <VControl>
               <VButton 
                 icon="fas fa-align-right"
+                fullwidth
                 :class="[temaAmbiental.tema === 'hidrografia'? 'is-active' : '']"
                 @click="temaAmbiental.setTema('hidrografia')"
               >
@@ -439,10 +442,22 @@ watch(
               </VButton>
             </VControl>
           </VField>
-          
-          <div>
-            <p>{{ temaAmbiental.getTema }} </p>
-          </div>
+          {{ temaAmbiental.tema }} {{ temaAmbiental.modal }}
+          <VModal
+              :open="temaAmbiental.modal"
+              :title="temaAmbiental.getBiomaName + ' - ' + temaAmbiental.tema"
+              size="big"
+              actions="right"
+              cancelLabel="Fechar"
+              @close="temaAmbiental.closeModal()"
+            >
+              <template #content>
+                <VMarkdownPreview 
+                :source="temaAmbiental.text"
+                />
+              </template>
+              
+            </VModal>
 
           <!--Map Box-->
           <div
