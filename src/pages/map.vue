@@ -21,11 +21,11 @@ useHead({
     default-sidebar="dashboard"
     nowrap
   >
-    <MapsDashboard>
+    <Conteudo>
       <template #header>
         <div class="content-section-header">
         </div>
       </template>
-    </MapsDashboard>
+    </Conteudo>
   </component>
 </template>

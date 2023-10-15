@@ -6,6 +6,7 @@ import { useDarkmode } from '/@src/stores/darkmode'
 import 'mapbox-gl/src/css/mapbox-gl.css'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
+
 const themeColors = useThemeColors()
 
 const props = defineProps<{
@@ -201,6 +202,19 @@ function loadLayers() {
     type: 'geojson',
     data: locations as any,
   })
+  map.value.addSource('ibge-wms', {
+    type: 'raster',
+    tiles: [
+      'https://geoservicos.ibge.gov.br/geoserver/BDIA/wms?service=WMS&request=GetMap&layers=BDIA%3Agpc_geol_bioma&styles=&format=image%2Fpng&transparent=true&version=1.1.1&tiled=true&titulo=Prov%C3%ADncias&cql_filter=cd_bioma%3D3&srs=EPSG%3A3857&bbox={bbox-epsg-3857}&width=256&height=256',
+    ],
+    tileSize: 256,
+  });
+  map.value.addLayer({
+    id: 'ibge-wms-layer',
+    type: 'raster',
+    source: 'ibge-wms',
+    paint: {},
+  });
 
   // Add a layer showing the places.
   map.value.addLayer({
@@ -264,8 +278,8 @@ onMounted(() => {
       style: darkmode.isDark
         ? 'mapbox://styles/mapbox/dark-v10'
         : 'mapbox://styles/mapbox/light-v10',
-      center: [-77.04, 38.907],
-      zoom: 12,
+      center: [-51.92528,-14.235004],
+      zoom: 4,
     })
 
     geocoder.value = new MapboxGeocoder({
@@ -388,76 +402,51 @@ watch(
           <!--Title-->
           <h3>{{ temaAmbiental.getBiomaName }}</h3>
 
-          <p>{{temaAmbiental.getBiomaDescricao}}</p>
-          <br/>
-          <VField>
+          <p>{{ temaAmbiental.getBiomaDescricao }}</p>
+          <br>
+          <VField
+            v-for="tema in temaAmbiental.temas"
+            :key="tema.id"
+            addons
+          >
+            <VControl 
+              fullwidth
+            >
+              <VButton
+                :icon="tema.icon"
+                fullwidth
+                :class="[temaAmbiental.tema === tema.nickname ? 'is-active' : '']"
+                @click="temaAmbiental.setTema(tema.nickname)"
+              >
+                {{ tema.name }}
+              </VButton>
+            </VControl>
             <VControl>
               <VButton
-                icon="fas fa-align-left"
+                icon="fas fa-book-open"
                 fullwidth
-                :class="[temaAmbiental.tema === 'geologia'? 'is-active' : '']"
-                @click="temaAmbiental.setTema('geologia')"
+                :class="[temaAmbiental.tema === tema.nickname ? 'is-active' : '']"
+                @click="temaAmbiental.setTema(tema.nickname)"
               >
-                Geologia
-              </VButton>
-            </VControl>
-            <VControl>
-              <VButton
-                icon="fas fa-align-center"
-                fullwidth
-                :class="[temaAmbiental.tema === 'solos'? 'is-active' : '']"
-                @click="temaAmbiental.setTema('solos')"
-              >
-                Solos
-              </VButton>
-            </VControl>
-            <VControl>
-              <VButton 
-                icon="fas fa-align-right"
-                fullwidth
-                :class="[temaAmbiental.tema === 'clima'? 'is-active' : '']"
-                @click="temaAmbiental.setTema('clima')"
-              >
-                Clima
-              </VButton>
-            </VControl>
-            <VControl>
-              <VButton 
-                icon="fas fa-align-right"
-                fullwidth
-                :class="[temaAmbiental.tema === 'relevo'? 'is-active' : '']"
-                @click="temaAmbiental.setTema('relevo')"
-              >
-                Relevo
-              </VButton>
-            </VControl>
-            <VControl>
-              <VButton 
-                icon="fas fa-align-right"
-                fullwidth
-                :class="[temaAmbiental.tema === 'hidrografia'? 'is-active' : '']"
-                @click="temaAmbiental.setTema('hidrografia')"
-              >
-                Hidrografia
-              </VButton>
+                Saiba mais
+              </VButton> 
             </VControl>
           </VField>
-          {{ temaAmbiental.tema }} {{ temaAmbiental.modal }}
+
           <VModal
-              :open="temaAmbiental.modal"
-              :title="temaAmbiental.getBiomaName + ' - ' + temaAmbiental.tema"
-              size="big"
-              actions="right"
-              cancelLabel="Fechar"
-              @close="temaAmbiental.closeModal()"
-            >
-              <template #content>
-                <VMarkdownPreview 
+            :open="temaAmbiental.modal"
+            :title="temaAmbiental.getBiomaName + ' - ' + temaAmbiental.getTemaName"
+            size="big"
+            actions="right"
+            cancel-label="Fechar"
+            @close="temaAmbiental.closeModal()"
+          >
+            <template #content>
+              <VMarkdownPreview 
                 :source="temaAmbiental.text"
-                />
-              </template>
-              
-            </VModal>
+              />
+            </template>
+          </VModal>
 
           <!--Map Box-->
           <div
@@ -522,6 +511,12 @@ watch(
 </template>
 
 <style lang="scss">
+@import url('https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css');
+
+.iconoir{
+  font-size: 22px;
+  margin-right: 10px;
+}
 .has-top-nav {
   .dashboard-map-wrapper {
     top: 80px;
