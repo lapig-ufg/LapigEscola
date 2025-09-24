@@ -4,8 +4,8 @@ from ninja import Router
 
 from typing import List
 
-from ..models import Bioma, Tema, Conteudo, Layer
-from ..schema.bioma import BiomaSchema
+from ..models import Bioma, Tema, Conteudo, Layer, ImagemGaleria, Curiosidade, RecursoPedagogico
+from ..schema.bioma import BiomaSchema, SchemaImagemGaleria, SchemaCuriosidade, SchemaPedagogia
 from ..schema.layer import LayersSchema
 from ninja.orm import create_schema
 
@@ -42,11 +42,11 @@ def list_biomas(request):
 
   return result
 
-@router.get('/info/{bioma_slug}', response=InfoBiomaSchema)
+@router.get('/{bioma_slug}/info', response=InfoBiomaSchema)
 def get_info_bioma(request, bioma_slug):
   return get_object_or_404(Bioma, slug=bioma_slug)
 
-@router.get('/conteudo/{bioma_slug}/tema/{tema_slug}', response=ConteudoSchema)
+@router.get('/{bioma_slug}/tema/{tema_slug}/conteudo', response=ConteudoSchema)
 def conteudo(request, bioma_slug, tema_slug):
   # Verifica se o bioma existe
   bioma = get_object_or_404(Bioma, slug=bioma_slug)
@@ -59,7 +59,7 @@ def conteudo(request, bioma_slug, tema_slug):
 
 
 
-@router.get('/layers/{bioma_slug}/tema/{tema_slug}', response=LayersSchema)
+@router.get('/{bioma_slug}/tema/{tema_slug}/layers', response=LayersSchema)
 def get_layers(request, bioma_slug, tema_slug):
   # Verifica se o bioma existe
   bioma = get_object_or_404(Bioma, slug=bioma_slug)
@@ -72,3 +72,39 @@ def get_layers(request, bioma_slug, tema_slug):
     focusFeatureUrl=bioma.geourl,
     layers=layers
   )
+
+
+@router.get('/{bioma_slug}/tema/{tema_slug}/image', response=List[SchemaImagemGaleria])
+def get_layers(request, bioma_slug, tema_slug):
+  # Verifica se o bioma existe
+  bioma = get_object_or_404(Bioma, slug=bioma_slug)
+
+  # Obtém o tema específico do bioma
+  tema = get_object_or_404(Tema, slug=tema_slug, bioma=bioma)
+  images = ImagemGaleria.objects.filter(tema=tema)
+  # Obtém o conteúdo relacionado ao tema
+  return images
+
+
+@router.get('/{bioma_slug}/tema/{tema_slug}/curiosidades', response=List[SchemaCuriosidade])
+def get_curiosidades(request, bioma_slug, tema_slug):
+  # Verifica se o bioma existe
+  bioma = get_object_or_404(Bioma, slug=bioma_slug)
+
+  # Obtém o tema específico do bioma
+  tema = get_object_or_404(Tema, slug=tema_slug, bioma=bioma)
+  curiosidade = Curiosidade.objects.filter(tema=tema)
+  # Obtém o conteúdo relacionado ao tema
+  return curiosidade
+
+
+
+@router.get('/{bioma_slug}/tema/{tema_slug}/pedagogias', response=List[SchemaPedagogia])
+def get_pedagogias(request, bioma_slug, tema_slug):
+  # Verifica se o bioma existe
+  bioma = get_object_or_404(Bioma, slug=bioma_slug)
+
+  # Obtém o tema específico do bioma
+  tema = get_object_or_404(Tema, slug=tema_slug, bioma=bioma)
+  # Obtém o conteúdo relacionado ao tema
+  return RecursoPedagogico.objects.filter(tema=tema)

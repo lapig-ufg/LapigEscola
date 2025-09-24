@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8183:8000"
+    env_file: .env
+
+    #volumes:
+      #- media_volume:/app/src/backend/media
+      #- static_volume:/app/src/backend/static
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  db:
+    image: postgis/postgis:15-3.3
+    hostname: dbserver
+    environment:
+      POSTGRES_DB: lapig_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "21022:5432"
+    volumes:
+      - postgres_data2:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql  # Opcional
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    networks:
+      - app-network
+
+
+volumes:
+  postgres_data2:
+
+
+networks:
+  app-network:
+    driver: bridge

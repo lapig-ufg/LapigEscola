@@ -1,5 +1,11 @@
 <template>
   <footer>
-    <p>MapBiomas na Escola - Atlas dos Biomas Brasileiros | Educação Ambiental</p>
+    <p>{{ config.public.appTitle }} | {{config.public.appSubTile}}</p>
   </footer>
 </template>
+
+<script setup>
+const config = useRuntimeConfig()
+
+
+</script>

@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', api.urls),
     path('api/files/', include('django_ckeditor_5.urls')),
-    re_path(r'^(?!admin/|api/).*', NuxtView.as_view())
+    path('accounts/', include('allauth.urls')),
+    re_path(r'^(?!admin/|api/|accounts/).*', NuxtView.as_view())
 ]

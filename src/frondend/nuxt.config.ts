@@ -7,7 +7,6 @@ export default defineNuxtConfig({
 
 
   modules: [
-    '@nuxt/content',
     '@nuxt/eslint',
     '@nuxt/fonts',
     '@nuxt/icon',
@@ -24,6 +23,10 @@ export default defineNuxtConfig({
     }
   },
 
+  css: [
+    'primeicons/primeicons.css', // Ícones do PrimeVue
+    //'~/assets/css/primevue-custom.css' // Suas customizações
+  ],
   // Configurações básicas
   ssr: false, // Desativa SSR para modo estático (recomendado)
   nitro: {
@@ -39,6 +42,7 @@ export default defineNuxtConfig({
     baseURL: '/', // Base path (importante para assets)
     buildAssetsDir: 'static', // Pasta de assets (deve coincidir com Django)
 
+
   },
 
   // Configurações de desenvolvimento
@@ -49,7 +53,10 @@ export default defineNuxtConfig({
   // Configuração da API
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE || 'http://localhost:8000/api/v1/' // Endpoint Django
+      apiBase: process.env.API_BASE || 'http://localhost:8183/api/v1/',
+      appTitle: process.env.APPTITLE || 'Titulo do app',
+      appSubTile: process.env.APPSUBTITLE || '',
+      appBaseImage: 'https://s3.lapig.iesa.ufg.br/public/assets/all/imgs/lapignaescola.png'
     }
   }
 

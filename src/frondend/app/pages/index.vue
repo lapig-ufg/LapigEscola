@@ -1,35 +1,60 @@
-<!-- pages/index.vue -->
 <template>
   <div>
-    <h1 class="page-title">Bem-vindo ao Atlas dos Biomas Brasileiros</h1>
-
-    <div class="content-section">
-      <h2 class="content-title">Conheça nossos biomas</h2>
-
-      <div class="content-grid">
-        <BiomaCard
-          v-for="bioma in appState.biomas"
-          :key="bioma.id"
-          :title="bioma.label"
-          subtitle="Explore este bioma"
-          button-label="Ver detalhes"
-          :icon="bioma.icon"
-          @click="navigateToBioma(bioma.id)"
-        />
+    <div v-if="pending" class="loading">Carregando página...</div>
+    <div v-else-if="error" class="error">Erro ao carregar página: Tem que criar uma page static chamada home</div>
+    <div v-else>
+      <h1 class="page-title">{{ pageData.titulo }}</h1>
+      <div class="content-section">
+        <div class="content-wrapper" v-html="pageData.conteudo"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { inject } from 'vue';
-import { useRouter } from 'vue-router';
+const route = useRoute();
+const runtimeConfig = useRuntimeConfig();
 
-const router = useRouter();
-const appState = inject('appState');
+const { data: pageData, pending, error } = await useAsyncData(
+  `page-${route.params.slug}`,
+  () => $fetch(`${runtimeConfig.public.apiBase}pages/get/home`)
+);
 
-const navigateToBioma = (biomaId) => {
-  appState.activeBioma = biomaId;
-  router.push(`/biomas/${biomaId}`);
-};
+
+// Set meta tags
+useHead({
+  title: pageData.value?.titulo || 'Página',
+  meta: [
+    {
+      name: 'description',
+      content: pageData.value?.resumo || 'Conteúdo da página'
+    }
+  ]
+});
 </script>
+
+
+<style scoped>
+.page-title {
+  margin-bottom: 1rem;
+}
+
+.content-section {
+  line-height: 1.6;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  padding: 2rem;
+}
+
+
+
+</style>
+

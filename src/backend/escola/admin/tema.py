@@ -23,7 +23,7 @@ class HiddenModelAdminMixin:
 class ImagemGaleriaInline(OrderedTabularInline):
   model = ImagemGaleria
   extra = 1
-  fields = ('imagem_preview', 'imagem', 'titulo', 'descricao', 'order')
+  fields = ('imagem_preview', 'imagem', 'titulo', 'resumo', 'order')
   readonly_fields = ('imagem_preview', 'order')
   ordering = ('order',)
 
@@ -125,7 +125,7 @@ class CuriosidadeAdmin(HiddenModelAdminMixin, admin.ModelAdmin):
 class RecursoPedagogicoAdmin(HiddenModelAdminMixin, admin.ModelAdmin):
   list_display = ('titulo', 'tipo', 'tema_link', 'link_externo_short')
   list_filter = ('tema', 'tipo')
-  search_fields = ('titulo', 'descricao')
+  search_fields = ('titulo', 'resumo')
   list_editable = ('tipo',)
 
   formfield_overrides = {
