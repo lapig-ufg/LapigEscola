@@ -28,7 +28,14 @@ useHead({
     {
       name: 'description',
       content: pageData.value?.resumo || 'Conteúdo da página'
-    }
+    },
+    {
+      property: 'og:image',
+      content: computed(() => {
+        const imagem = pageData.value?.imagem;
+        return imagem ? imagem : runtimeConfig.public.appBaseImage;
+      })
+    },
   ]
 });
 </script>

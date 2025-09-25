@@ -42,6 +42,7 @@ const { data: pageData, pending, error } = await useAsyncData(
 
 
 
+
 // Set meta tags
 useHead({
   title: computed(() => pageData.value?.titulo || 'Página'),
@@ -49,7 +50,14 @@ useHead({
     {
       name: 'description',
       content: computed(() => pageData.value?.resumo || 'Conteúdo da página')
-    }
+    },
+    {
+      property: 'og:image',
+      content: computed(() => {
+        const imagem = pageData.value?.imagem;
+        return imagem ? imagem : runtimeConfig.public.appBaseImage;
+      })
+    },
   ]
 });
 </script>

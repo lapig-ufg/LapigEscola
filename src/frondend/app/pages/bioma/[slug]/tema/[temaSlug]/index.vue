@@ -83,6 +83,8 @@ import ImageCard from '~/components/content/ImageCard.vue'
 import BiomaContent from '~/components/content/BiomaContent.vue'
 import InfoCard from '~/components/content/InfoCard.vue'
 
+const runtimeConfig = useRuntimeConfig();
+const baseImage = runtimeConfig.public.appBaseImage
 
 const route = useRoute();
 const biomaSlug = route.params.slug
@@ -161,6 +163,23 @@ const handleCardAction = (data) => {
 
 
 
+
+useHead({
+  title: computed(() => conteudo.value?.titulo || 'Página'),
+  meta: [
+    {
+      name: 'description',
+      content: computed(() => conteudo.value?.resumo || 'Conteúdo da página')
+    },
+    {
+      property: 'og:image',
+      content: computed(() => {
+        const imagem = conteudo.value?.imagem;
+        return imagem ? imagem : baseImage;
+      })
+    },
+  ]
+});
 </script>
 
 <style>

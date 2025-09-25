@@ -32,7 +32,7 @@
             class="p-button-success"
             @click="handleButtonClick"
           />
-          <DownloadButton v-if="file"
+          <DownloadButton v-if="file" style="float: right;"
               :title="title"
               :file="file"
           />
@@ -47,6 +47,7 @@
 import DownloadButton from '~/components/content/DownloadButton.vue'
 
 const runtimeConfig = useRuntimeConfig();
+const baseImage = runtimeConfig.public.appBaseImage
 const props = defineProps({
   title: String,
   subtitle: String,
@@ -58,7 +59,7 @@ const props = defineProps({
 
 });
 
-const baseImage = runtimeConfig.public.appBaseImage
+
 // Define emits
 const emit = defineEmits(['button-click']);
 
