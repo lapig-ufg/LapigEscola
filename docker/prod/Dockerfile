@@ -14,8 +14,8 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app/frontend
 COPY src/frondend/package*.json ./
-RUN npm install && npm install --save-dev @primevue/nuxt-module
-RUN npm ci --only=production
+
+RUN npm ci
 
 COPY src/frondend/ ./
 RUN npm run generate
