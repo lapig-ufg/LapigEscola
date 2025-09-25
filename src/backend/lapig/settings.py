@@ -75,10 +75,21 @@ AUTHENTICATION_BACKENDS = [
     # ...
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    os.environ.get('DJANGO_HOST','http://localhost:8185')# Seu frontend Nuxt
+# Pegar múltiplas origens da variável de ambiente
+CORS_ALLOWED_ORIGINS = []
 
-]
+# Origem principal
+django_host = os.environ.get('DJANGO_HOST', 'http://localhost:8185')
+CORS_ALLOWED_ORIGINS.append(django_host)
+
+# Origens adicionais
+additional_origins = os.environ.get('ADDITIONAL_CORS_ORIGINS', '')
+if additional_origins:
+    CORS_ALLOWED_ORIGINS.extend([
+        origin.strip()
+        for origin in additional_origins.split(',')
+        if origin.strip()
+    ])
 
 
 ROOT_URLCONF = 'lapig.urls'
