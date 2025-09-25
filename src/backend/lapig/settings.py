@@ -25,7 +25,7 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nt!8!2&y*27+zhtn!)*vjsbi&_$%x_8%j2o-u0)e3hw1_s30#4'
+SECRET_KEY =os.getenv('DJANGO_SECRET_KEY', 'django-insecure-nt!8!2&y*27+zhtn!)*vjsbi&_$%x_8%j2o-u0)e3hw1_s30#4')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
@@ -48,10 +48,10 @@ INSTALLED_APPS = [
     'storages',
     'ordered_model',
     'corsheaders',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.openid_connect',
+#    'allauth',
+#    'allauth.account',
+#    'allauth.socialaccount',
+#    'allauth.socialaccount.providers.openid_connect',
 ]
 
 MIDDLEWARE = [
@@ -63,17 +63,17 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-'allauth.account.middleware.AccountMiddleware',
+#'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-AUTHENTICATION_BACKENDS = [
+#AUTHENTICATION_BACKENDS = [
     # ...
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+ #   'django.contrib.auth.backends.ModelBackend',
+ #   'allauth.account.auth_backends.AuthenticationBackend',
     # ...
-]
+#]
 
 # Pegar múltiplas origens da variável de ambiente
 CORS_ALLOWED_ORIGINS = []
@@ -131,26 +131,26 @@ DATABASES = {
 }
 
 
-SOCIALACCOUNT_PROVIDERS = {
-    "openid_connect": {
-        "APPS": [
-            {
-                "provider_id": "keycloak",
-                "name": "Lapig",
-                "client_id": os.getenv('KEYCLOACK_CLIENT_ID',''),
-                "secret": os.getenv('KEYCLOACK_SECRET',''),
-                "settings": {
-                    "server_url": os.getenv('KEYCLOACK_SERVER_URL',''),
-                },
-            }
-        ]
-    }
-}
+#SOCIALACCOUNT_PROVIDERS = {
+#    "openid_connect": {
+#        "APPS": [
+#            {
+#                "provider_id": "keycloak",
+#                "name": "Lapig",
+#                "client_id": os.getenv('KEYCLOACK_CLIENT_ID',''),
+#                "secret": os.getenv('KEYCLOACK_SECRET',''),
+#                "settings": {
+#                    "server_url": os.getenv('KEYCLOACK_SERVER_URL',''),
+#                },
+#            }
+#        ]
+#    }
+#}
 SITE_ID = 1
 
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+#ACCOUNT_EMAIL_REQUIRED = True
+#ACCOUNT_USERNAME_REQUIRED = False
+#ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
