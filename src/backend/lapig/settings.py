@@ -146,7 +146,7 @@ DATABASES = {
 #        ]
 #    }
 #}
-SITE_ID = 1
+#SITE_ID = 1
 
 #ACCOUNT_EMAIL_REQUIRED = True
 #ACCOUNT_USERNAME_REQUIRED = False
