@@ -76,7 +76,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    os.getenv('DJANGO_HOST','http://localhost:8185')# Seu frontend Nuxt
+    os.environ.get('DJANGO_HOST','http://localhost:8185')# Seu frontend Nuxt
 
 ]
 
