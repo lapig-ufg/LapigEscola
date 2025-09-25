@@ -4,7 +4,9 @@
 # Stage 1: Build Nuxt.js frontend
 FROM node:20-slim AS frontend-builder
 WORKDIR /app/frontend
-
+ENV API_BASE=https://escola.lapig.iesa.ufg.br/api/v1/
+ENV APPTITLE='Lapi Na Escola'
+ENV APPSUBTITLE='Projeto Lapig na Escola'
 # Install build dependencies for native modules
 RUN apt-get update && apt-get install -y \
     python3 \
