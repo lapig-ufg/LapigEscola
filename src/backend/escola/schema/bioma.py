@@ -32,4 +32,5 @@ class SchemaPedagogia(Schema):
   titulo: str
   resumo: str
   imagem: str | None = None
+  file: str | None = None
   id: int

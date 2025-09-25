@@ -24,13 +24,17 @@
         <slot></slot>
       </template>
 
-      <template #footer v-if="buttonLabel || $slots.footer">
+      <template #footer v-if="buttonLabel || file || $slots.footer">
         <slot name="footer">
           <Button
             v-if="buttonLabel"
             :label="buttonLabel"
             class="p-button-success"
             @click="handleButtonClick"
+          />
+          <DownloadButton v-if="file"
+              :title="title"
+              :file="file"
           />
         </slot>
       </template>
@@ -40,6 +44,8 @@
 
 <script setup>
 
+import DownloadButton from '~/components/content/DownloadButton.vue'
+
 const runtimeConfig = useRuntimeConfig();
 const props = defineProps({
   title: String,
@@ -47,7 +53,8 @@ const props = defineProps({
   buttonLabel: String,
   image: String,
   cardType: String,
-  cardId: [String, Number]
+  cardId: [String, Number],
+  file: String
 
 });
 

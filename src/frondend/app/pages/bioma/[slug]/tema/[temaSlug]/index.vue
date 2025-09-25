@@ -39,6 +39,7 @@
               button-label="Leia Mais"
               cardType="curiosidade"
               :cardId="curiosidade.id"
+
               @button-click="handleCardAction"
 
             />
@@ -59,6 +60,7 @@
               button-label="Leia Mais"
               cardType="pedagogia"
               :cardId="pedagogia.id"
+              :file="pedagogia.file"
               @button-click="handleCardAction"
 
             />
