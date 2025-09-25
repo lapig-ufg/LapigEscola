@@ -28,7 +28,7 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 SECRET_KEY = 'django-insecure-nt!8!2&y*27+zhtn!)*vjsbi&_$%x_8%j2o-u0)e3hw1_s30#4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = ['*']
 
@@ -90,6 +90,8 @@ if additional_origins:
         for origin in additional_origins.split(',')
         if origin.strip()
     ])
+
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
 
 ROOT_URLCONF = 'lapig.urls'
