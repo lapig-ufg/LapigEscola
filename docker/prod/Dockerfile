@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app/frontend
 COPY src/frondend/package*.json ./
+RUN npm install
 RUN npm ci --only=production
 
 COPY src/frondend/ ./
