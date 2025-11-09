@@ -1,0 +1,11 @@
+{
+  "/api": {
+    "target": "https://escola.lapig.iesa.ufg.br",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "headers": {
+      "Origin": "https://escola.lapig.iesa.ufg.br"
+    }
+  }
+}

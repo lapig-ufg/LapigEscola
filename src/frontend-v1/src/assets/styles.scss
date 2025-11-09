@@ -1,0 +1,378 @@
+/* You can add global styles to this file, and also import other style files */
+@use './tailwind.css';
+@use './layout/layout.scss';
+@use 'primeicons/primeicons.css';
+@use './demo/demo.scss';
+@use "ol/ol.css";
+
+.map-container {
+    .ol-viewport {
+        border-bottom-right-radius: 6px !important;
+        border-top-right-radius: 6px !important;
+    }
+}
+
+.map{
+    .ol-viewport {
+        border-radius: 6px !important;
+    }
+    .bbox-draw-control { right: 6px; top: 5px; }
+}
+
+::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+    transition: all 0.5s ease;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--surface-ground);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    transition: all 0.5s ease;
+    background: var(--primary-color);
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--primary-color) 70%, white);
+    cursor: pointer !important;
+}
+
+.layer-tree {
+    border-radius: unset !important;
+    border-top-left-radius: 6px !important;
+    border-bottom-left-radius: 6px !important;
+}
+
+/* ===== CKEditor 5 Content Styles ===== */
+/* Estilos globais para conteúdo renderizado do CKEditor 5 */
+
+.content-wrapper {
+    line-height: 1.8;
+    font-size: 1.0625rem;
+    color: var(--text-color);
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+/* Headings */
+.content-wrapper h1,
+.content-wrapper h2,
+.content-wrapper h3,
+.content-wrapper h4,
+.content-wrapper h5,
+.content-wrapper h6 {
+    font-weight: 600;
+    line-height: 1.3;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.content-wrapper h1 {
+    font-size: 2.5rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+.content-wrapper h2 {
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+.content-wrapper h3 {
+    font-size: 1.75rem;
+}
+
+.content-wrapper h4 {
+    font-size: 1.5rem;
+}
+
+.content-wrapper h5 {
+    font-size: 1.25rem;
+}
+
+.content-wrapper h6 {
+    font-size: 1.125rem;
+}
+
+/* Paragraphs */
+.content-wrapper p {
+    margin-bottom: 1rem;
+    line-height: 1.8;
+}
+
+/* Lists */
+.content-wrapper ul,
+.content-wrapper ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+.content-wrapper ul {
+    list-style-type: disc;
+}
+
+.content-wrapper ol {
+    list-style-type: decimal;
+}
+
+.content-wrapper li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.content-wrapper ul ul,
+.content-wrapper ol ol,
+.content-wrapper ul ol,
+.content-wrapper ol ul {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Links */
+.content-wrapper a {
+    color: var(--primary-color);
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.content-wrapper a:hover {
+    color: color-mix(in srgb, var(--primary-color) 70%, black);
+}
+
+/* Images and Figures */
+.content-wrapper img {
+    max-width: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    display: block;
+    margin: 1.5rem auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    object-fit: contain;
+}
+
+.content-wrapper figure {
+    margin: 2rem 0;
+    text-align: center;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.content-wrapper figure img {
+    margin: 0 auto;
+    max-width: 100% !important;
+}
+
+.content-wrapper figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+    font-style: italic;
+}
+
+/* Tables */
+.content-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    overflow-x: auto;
+    display: block;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.content-wrapper table thead {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.content-wrapper table th,
+.content-wrapper table td {
+    border: 1px solid var(--surface-border);
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+
+.content-wrapper table th {
+    font-weight: 600;
+}
+
+.content-wrapper table tbody tr:nth-child(even) {
+    background-color: var(--surface-ground);
+}
+
+.content-wrapper table tbody tr:hover {
+    background-color: var(--surface-hover);
+}
+
+/* Blockquotes */
+.content-wrapper blockquote {
+    margin: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    border-left: 4px solid var(--primary-color);
+    background-color: var(--surface-ground);
+    font-style: italic;
+    color: var(--text-color-secondary);
+}
+
+.content-wrapper blockquote p {
+    margin: 0;
+}
+
+/* Code */
+.content-wrapper code {
+    background-color: var(--surface-ground);
+    color: var(--primary-color);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+}
+
+.content-wrapper pre {
+    background-color: var(--surface-ground);
+    border: 1px solid var(--surface-border);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+}
+
+.content-wrapper pre code {
+    background: none;
+    padding: 0;
+    color: var(--text-color);
+}
+
+/* Horizontal Rule */
+.content-wrapper hr {
+    border: none;
+    border-top: 2px solid var(--surface-border);
+    margin: 2rem 0;
+}
+
+/* Text formatting */
+.content-wrapper strong,
+.content-wrapper b {
+    font-weight: 700;
+}
+
+.content-wrapper em,
+.content-wrapper i {
+    font-style: italic;
+}
+
+.content-wrapper u {
+    text-decoration: underline;
+}
+
+.content-wrapper s {
+    text-decoration: line-through;
+}
+
+/* Videos and Iframes */
+.content-wrapper iframe,
+.content-wrapper video {
+    max-width: 100%;
+    display: block;
+    margin: 2rem auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.content-wrapper .video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    margin: 2rem 0;
+}
+
+.content-wrapper .video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+/* Alignment */
+.content-wrapper .image-style-align-left {
+    float: left;
+    margin-right: 1.5rem;
+    margin-bottom: 1rem;
+    max-width: 50% !important;
+}
+
+.content-wrapper .image-style-align-right {
+    float: right;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    max-width: 50% !important;
+}
+
+.content-wrapper .image-style-align-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100% !important;
+}
+
+/* Text alignment */
+.content-wrapper .text-left {
+    text-align: left;
+}
+
+.content-wrapper .text-center {
+    text-align: center;
+}
+
+.content-wrapper .text-right {
+    text-align: right;
+}
+
+.content-wrapper .text-justify {
+    text-align: justify;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .content-wrapper {
+        font-size: 1rem;
+    }
+
+    .content-wrapper h1 {
+        font-size: 2rem;
+    }
+
+    .content-wrapper h2 {
+        font-size: 1.75rem;
+    }
+
+    .content-wrapper h3 {
+        font-size: 1.5rem;
+    }
+
+    .content-wrapper table {
+        font-size: 0.875rem;
+    }
+
+    .content-wrapper .image-style-align-left,
+    .content-wrapper .image-style-align-right {
+        float: none;
+        margin: 1rem auto;
+        display: block;
+        max-width: 100% !important;
+    }
+}
+
+
