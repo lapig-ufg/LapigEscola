@@ -289,11 +289,10 @@ export class TemaComponent implements OnInit, OnDestroy {
    * Navega para página de detalhe
    */
   navigateToDetail(event: { type?: string; id?: number | string }): void {
-    if (!event.type || !event.id) return;
+    if (!event.type || !event.id || !this.biomaSlug || !this.temaSlug) return;
 
-    this.router.navigate([`${event.type}-${event.id}`], {
-      relativeTo: this.route
-    });
+    // Navega para a rota de detalhe: /app/bioma/:slug/tema/:temaSlug/:type-:id
+    this.router.navigate(['/app/bioma', this.biomaSlug, 'tema', this.temaSlug, `${event.type}-${event.id}`]);
   }
 
   /**

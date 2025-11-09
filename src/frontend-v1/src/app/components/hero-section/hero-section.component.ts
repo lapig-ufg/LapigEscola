@@ -120,7 +120,7 @@ import { ButtonModule } from 'primeng/button';
       font-weight: 800;
       line-height: 1.15;
       margin: 0 0 2rem 0;
-      color: #1f2937;
+      color: var(--text-color);
       animation: fadeInUp 0.6s ease-out 0.2s backwards;
     }
 
@@ -149,7 +149,7 @@ import { ButtonModule } from 'primeng/button';
     .hero-description {
       font-size: 1.25rem;
       line-height: 1.8;
-      color: #6b7280;
+      color: var(--text-color-secondary);
       max-width: 750px;
       margin: 0 auto 3rem auto;
       animation: fadeInUp 0.6s ease-out 0.4s backwards;
@@ -338,6 +338,33 @@ import { ButtonModule } from 'primeng/button';
       66% {
         transform: translate(-20px, 20px) scale(0.9);
       }
+    }
+
+    /* Dark Mode Styles */
+    :host-context(.app-dark) .hero-stats {
+      background: var(--surface-card);
+      border-color: var(--surface-border);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    :host-context(.app-dark) .stat-label {
+      color: var(--text-color-secondary);
+    }
+
+    :host-context(.app-dark) .stat-divider {
+      background: linear-gradient(180deg, transparent, var(--surface-border), transparent);
+    }
+
+    :host-context(.app-dark) :host ::ng-deep .hero-btn-secondary {
+      background: var(--surface-card);
+      color: #10b981;
+      border-color: #10b981;
+    }
+
+    :host-context(.app-dark) :host ::ng-deep .hero-btn-secondary:hover {
+      background: var(--surface-hover);
+      color: #34d399;
+      border-color: #34d399;
     }
 
     @media (max-width: 768px) {

@@ -9,7 +9,13 @@ export const appRoutes: Routes = [
         path: '',
         loadComponent: () => import('@/pages/landing-home/landing-home.component').then(c => c.LandingHomeComponent)
     },
-    // Rotas com layout
+    // Páginas estáticas com layout da landing
+    {
+        path: 'page/:slug',
+        loadComponent: () => import('@/pages/static-page/static-page-landing.component').then(c => c.StaticPageLandingComponent),
+        data: { breadcrumb: 'Página' }
+    },
+    // Rotas com layout do app
     {
         path: 'app',
         component: AppLayout,

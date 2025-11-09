@@ -81,6 +81,16 @@ import { CtaSectionComponent } from '@/components/cta-section/cta-section.compon
     section {
       scroll-margin-top: 80px; /* Offset para scroll suave com topbar fixo */
     }
+
+    /* Dark Mode Styles */
+    :host-context(.app-dark) .landing-home {
+      background: linear-gradient(135deg,
+        #0c1a14 0%,
+        #0f2419 25%,
+        #0a1612 50%,
+        #0f2419 75%,
+        #0c1a14 100%);
+    }
   `]
 })
 export class LandingHomeComponent {}

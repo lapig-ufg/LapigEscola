@@ -3,9 +3,11 @@
  * Rodapé da landing page com informações institucionais
  */
 
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { PaginaService } from '@/services';
+import { MenuItemSchema } from '@/models';
 
 @Component({
   selector: 'footer-home',
@@ -17,7 +19,11 @@ import { RouterModule } from '@angular/router';
         <!-- Top Section -->
         <div class="footer-top">
           <div class="footer-about">
-            <h3 class="footer-title">LapigEscola</h3>
+            <img
+              src="/layout/images/lapig_escola.png"
+              alt="LapigEscola"
+              class="footer-logo"
+            />
             <p class="footer-description">
               Plataforma educacional sobre biodiversidade e biomas brasileiros,
               desenvolvida pelo LAPIG/UFG para promover a educação ambiental.
@@ -40,6 +46,14 @@ import { RouterModule } from '@angular/router';
 
           <div class="footer-links">
             <div class="footer-column">
+              <h4 class="footer-column-title">Navegação</h4>
+              <ul class="footer-link-list">
+                <li><a [routerLink]="['/']">Home</a></li>
+                <li><a [routerLink]="['/app/biomas']">Explorar Biomas</a></li>
+              </ul>
+            </div>
+
+            <div class="footer-column">
               <h4 class="footer-column-title">Biomas</h4>
               <ul class="footer-link-list">
                 <li><a [routerLink]="['/bioma/amazonia']">Amazônia</a></li>
@@ -51,23 +65,14 @@ import { RouterModule } from '@angular/router';
               </ul>
             </div>
 
-            <div class="footer-column">
-              <h4 class="footer-column-title">Recursos</h4>
+            <div class="footer-column" *ngIf="iniciativaItems.length > 0">
+              <h4 class="footer-column-title">A Iniciativa</h4>
               <ul class="footer-link-list">
-                <li><a href="#recursos">Materiais Pedagógicos</a></li>
-                <li><a href="#recursos">Galeria de Imagens</a></li>
-                <li><a href="#recursos">Vídeos Educativos</a></li>
-                <li><a href="#recursos">Curiosidades</a></li>
-              </ul>
-            </div>
-
-            <div class="footer-column">
-              <h4 class="footer-column-title">Institucional</h4>
-              <ul class="footer-link-list">
-                <li><a href="/page/sobre">Sobre o Projeto</a></li>
-                <li><a href="/page/equipe">Equipe</a></li>
-                <li><a href="/page/contato">Contato</a></li>
-                <li><a href="/page/privacidade">Política de Privacidade</a></li>
+                <li *ngFor="let item of iniciativaItems">
+                  <a [routerLink]="['/page', item.slug || item.anchor_id]">
+                    {{ item.label }}
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
@@ -116,6 +121,15 @@ import { RouterModule } from '@angular/router';
 
     .footer-about {
       max-width: 400px;
+    }
+
+    .footer-logo {
+      width: 10rem;
+      height: auto;
+      max-width: 100%;
+      object-fit: contain;
+      margin-bottom: 1.5rem;
+      filter: brightness(1.2);
     }
 
     .footer-title {
@@ -236,6 +250,25 @@ import { RouterModule } from '@angular/router';
     }
   `]
 })
-export class FooterHomeComponent {
+export class FooterHomeComponent implements OnInit {
+  private readonly paginaService = inject(PaginaService);
+
   currentYear = new Date().getFullYear();
+  iniciativaItems: MenuItemSchema[] = [];
+
+  ngOnInit(): void {
+    this.loadIniciativaItems();
+  }
+
+  private loadIniciativaItems(): void {
+    this.paginaService.getMenu().subscribe({
+      next: (items: MenuItemSchema[]) => {
+        this.iniciativaItems = items.sort((a, b) => a.order - b.order);
+      },
+      error: (err: any) => {
+        console.error('Erro ao carregar itens da iniciativa:', err);
+        this.iniciativaItems = [];
+      }
+    });
+  }
 }

@@ -9,28 +9,19 @@
 
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Title, Meta, DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ConteudoService } from '@/services';
 import { Curiosidade, RecursoPedagogico } from '@/models';
 import { environment } from '@/environments/environment';
-import { DownloadButtonComponent } from '@/components';
+import { DownloadButtonComponent, PdfViewerComponent, ImageViewerComponent } from '@/components';
 
 @Component({
   selector: 'app-detail',
   standalone: true,
-  imports: [CommonModule, DownloadButtonComponent],
+  imports: [CommonModule, RouterModule, DownloadButtonComponent, PdfViewerComponent, ImageViewerComponent],
   template: `
     <div class="detail-container">
-      <!-- Breadcrumb / Back Button -->
-      <button
-        *ngIf="!loading"
-        class="back-button p-link flex align-items-center gap-2 mb-4"
-        (click)="goBack()"
-      >
-        <i class="pi pi-arrow-left"></i>
-        <span>Voltar</span>
-      </button>
 
       <!-- Loading State -->
       <div *ngIf="loading" class="flex align-items-center justify-content-center p-8">
@@ -59,13 +50,28 @@ import { DownloadButtonComponent } from '@/components';
         </div>
 
         <!-- Cover Image -->
-        <div *ngIf="contentData.imagem" class="detail-cover-image">
+        <div *ngIf="contentData.imagem && !isImageFile(contentData.imagem)" class="detail-cover-image">
           <img [src]="contentData.imagem" [alt]="contentData.titulo" />
         </div>
 
-        <!-- Download Button (só para pedagogia com arquivo) -->
+        <!-- Image Viewer (se imagem for arquivo principal) -->
+        <app-image-viewer
+          *ngIf="contentData.imagem && isImageFile(contentData.imagem)"
+          [imageUrl]="contentData.imagem"
+          [title]="contentData.titulo"
+          [description]="contentData.resumo"
+        />
+
+        <!-- PDF Viewer (só para pedagogia com arquivo PDF) -->
+        <app-pdf-viewer
+          *ngIf="isPedagogia && getPedagogiaFile() && isPdfFile(getPedagogiaFile()!)"
+          [fileUrl]="getPedagogiaFile()!"
+          [title]="contentData.titulo"
+        />
+
+        <!-- Download Button (só para pedagogia com arquivo não-PDF e não-imagem) -->
         <app-download-button
-          *ngIf="isPedagogia && getPedagogiaFile()"
+          *ngIf="isPedagogia && getPedagogiaFile() && !isPdfFile(getPedagogiaFile()!) && !isImageFile(getPedagogiaFile()!)"
           [title]="contentData.titulo"
           [file]="getPedagogiaFile()!"
         />
@@ -316,15 +322,39 @@ export class DetailComponent implements OnInit {
     return undefined;
   }
 
+  /**
+   * Verifica se o arquivo é um PDF
+   */
+  isPdfFile(fileUrl: string): boolean {
+    if (!fileUrl) return false;
+    const lowerUrl = fileUrl.toLowerCase();
+    return lowerUrl.endsWith('.pdf') || lowerUrl.includes('.pdf?') || lowerUrl.includes('pdf');
+  }
+
+  /**
+   * Verifica se o arquivo é uma imagem
+   */
+  isImageFile(fileUrl: string): boolean {
+    if (!fileUrl) return false;
+    const lowerUrl = fileUrl.toLowerCase();
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp'];
+    return imageExtensions.some(ext =>
+      lowerUrl.endsWith(ext) || lowerUrl.includes(ext + '?')
+    );
+  }
+
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      // Parse do formato "tipo-id" (ex: "curiosidade-123")
-      const typeId = params['type'] + '-' + params['id'];
-      const parts = typeId.split('-');
+      // Pega o último segmento da URL que contém "tipo-id"
+      const urlSegments = this.route.snapshot.url;
+      const lastSegment = urlSegments[urlSegments.length - 1].path;
 
-      if (parts.length >= 2) {
-        this.type = parts[0]; // 'curiosidade' ou 'pedagogia'
-        this.id = parseInt(parts[1], 10);
+      // Parse do formato "tipo-id" (ex: "pedagogia-5" ou "curiosidade-123")
+      const match = lastSegment.match(/^(curiosidade|pedagogia)-(\d+)$/);
+
+      if (match) {
+        this.type = match[1]; // 'curiosidade' ou 'pedagogia'
+        this.id = parseInt(match[2], 10);
 
         if (this.id && !isNaN(this.id)) {
           this.loadContent();
@@ -333,8 +363,9 @@ export class DetailComponent implements OnInit {
           this.loading = false;
         }
       } else {
-        this.error = 'Formato de URL inválido';
+        this.error = `Formato de URL inválido. Esperado: tipo-id, recebido: ${lastSegment}`;
         this.loading = false;
+        console.error('URL parsing error:', lastSegment);
       }
     });
   }

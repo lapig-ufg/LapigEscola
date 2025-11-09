@@ -375,4 +375,91 @@
     }
 }
 
+/* ===== Dark Mode Overrides for CKEditor Content ===== */
+:root.app-dark,
+.app-dark {
+    .content-wrapper {
+        color: var(--text-color) !important;
+
+        /* Force override ALL text elements including those with inline styles */
+        * {
+            color: var(--text-color) !important;
+        }
+
+        /* Ensure all text elements inherit proper color - override inline styles */
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-color) !important;
+        }
+
+        h2 {
+            color: var(--primary-color) !important;
+        }
+
+        p, li, td, th, span, div, strong, em, b, i, u {
+            color: var(--text-color) !important;
+        }
+
+        /* Links need specific color */
+        a {
+            color: var(--primary-color) !important;
+        }
+
+        a:hover {
+            color: color-mix(in srgb, var(--primary-color) 70%, white);
+        }
+
+        /* Blockquotes */
+        blockquote {
+            background-color: var(--surface-ground);
+            color: var(--text-color-secondary);
+        }
+
+        /* Code */
+        code {
+            background-color: var(--surface-ground);
+            color: var(--primary-color);
+        }
+
+        pre {
+            background-color: var(--surface-ground);
+            border-color: var(--surface-border);
+        }
+
+        pre code {
+            color: var(--text-color);
+        }
+
+        /* Tables */
+        table th,
+        table td {
+            border-color: var(--surface-border);
+            color: var(--text-color);
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: var(--surface-ground);
+        }
+
+        table tbody tr:hover {
+            background-color: var(--surface-hover);
+        }
+
+        /* Figcaption */
+        figcaption {
+            color: var(--text-color-secondary);
+        }
+
+        /* Images - adjust shadow for dark mode */
+        img {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Tag in detail page */
+        .tag {
+            background: var(--surface-100);
+            color: var(--text-color-secondary);
+        }
+    }
+}
+
 

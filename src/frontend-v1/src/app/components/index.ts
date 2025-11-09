@@ -8,6 +8,8 @@ export * from './bioma-content/bioma-content.component';
 export * from './image-card/image-card.component';
 export * from './info-card/info-card.component';
 export * from './download-button/download-button.component';
+export * from './pdf-viewer/pdf-viewer.component';
+export * from './image-viewer/image-viewer.component';
 
 // Landing Page Components
 export * from './hero-section/hero-section.component';

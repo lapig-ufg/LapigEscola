@@ -51,6 +51,21 @@ import { MenuItemSchema } from '@/models';
           </a>
 
           <ul class="topbar-menu-list">
+            <!-- Home link -->
+            <li>
+              <a
+                [routerLink]="['/']"
+                pStyleClass="#menu"
+                enterFromClass="hidden"
+                leaveToClass="hidden"
+                pRipple
+                class="topbar-menu-item"
+              >
+                <i class="pi pi-home"></i>
+                <span>Home</span>
+              </a>
+            </li>
+
             <!-- Menu items from API -->
             <li *ngFor="let item of menuItems">
               <a
@@ -257,6 +272,19 @@ import { MenuItemSchema } from '@/models';
         transform: translateY(0);
       }
     }
+
+    /* Dark Mode Support */
+    :host-context(.app-dark) .topbar-home {
+      background: var(--surface-card);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 767px) {
+      :host-context(.app-dark) .topbar-menu {
+        background: var(--surface-card);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
+    }
   `]
 })
 export class TopbarHomeComponent implements OnInit {
@@ -288,7 +316,7 @@ export class TopbarHomeComponent implements OnInit {
 
   navigate(item: MenuItemSchema): void {
     if (item.slug) {
-      // Se tem slug, navega para a página
+      // Se tem slug, navega para a página estática com layout da landing
       this.router.navigate(['/page', item.slug]);
     } else if (item.anchor_id) {
       // Se tem anchor_id, faz scroll suave

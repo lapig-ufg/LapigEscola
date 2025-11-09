@@ -1,12 +1,12 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LayoutService } from '@/layout/service/layout.service';
-import { environment } from '@/environments/environment';
+import { AppBreadcrumb } from './app.breadcrumb';
 
 @Component({
     selector: '[app-topbar]',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, AppBreadcrumb],
     template: `
         <div class="layout-topbar">
             <div class="topbar-start">
@@ -19,14 +19,7 @@ import { environment } from '@/environments/environment';
                     <i class="pi pi-bars"></i>
                 </button>
 
-                <div class="topbar-title">
-                    <h1 class="m-0 text-xl font-semibold text-primary">
-                        {{ appTitle }}
-                    </h1>
-                    <span class="text-sm text-600">
-                        {{ appSubtitle }}
-                    </span>
-                </div>
+                <div app-breadcrumb class="topbar-breadcrumb"></div>
             </div>
 
             <div class="topbar-end">
@@ -43,15 +36,13 @@ import { environment } from '@/environments/environment';
         </div>
     `,
     styles: [`
-        .topbar-title {
-            display: flex;
-            flex-direction: column;
+        .topbar-breadcrumb {
             margin-left: 1rem;
+            flex: 1;
         }
 
         .topbar-theme-toggle {
             font-size: 1.25rem;
-            padding: 0.5rem;
             border-radius: 50%;
             transition: all 0.2s;
         }
@@ -61,19 +52,13 @@ import { environment } from '@/environments/environment';
         }
 
         @media (max-width: 768px) {
-            .topbar-title span {
-                display: none;
-            }
-            .topbar-title h1 {
-                font-size: 1rem;
+            .topbar-breadcrumb {
+                margin-left: 0.5rem;
             }
         }
     `]
 })
 export class AppTopbar {
-    appTitle = environment.appTitle;
-    appSubtitle = environment.appSubtitle;
-
     @ViewChild('menubutton') menuButton!: ElementRef;
     @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
 

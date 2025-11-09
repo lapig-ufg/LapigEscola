@@ -63,25 +63,7 @@ export class AppMenu implements OnInit {
     private buildMenu(biomas: BiomaSchema[], menuItems: MenuItemSchema[]): void {
         this.model = [];
 
-        // 1. Seção "A Iniciativa" - Páginas estáticas
-        if (menuItems.length > 0) {
-            this.model.push({
-                label: 'A Iniciativa',
-                icon: 'pi pi-info-circle',
-                items: menuItems
-                    .sort((a, b) => a.order - b.order)
-                    .map(item => ({
-                        label: item.label,
-                        icon: item.icon || 'pi pi-fw pi-file',
-                        routerLink: [`/app/page/${item.slug || item.anchor_id}`]
-                    }))
-            });
-
-            // Separador
-            this.model.push({ separator: true });
-        }
-
-        // 2. Seção "Biomas Brasileiros" - Hierárquico
+        // Seção "Biomas Brasileiros" - Hierárquico
         if (biomas.length > 0) {
             this.model.push({
                 label: 'Biomas Brasileiros',

@@ -627,6 +627,58 @@ const BIOMA_IMAGES: Record<string, string> = {
       margin: 0;
     }
 
+    /* Dark Mode Styles */
+    :host-context(.app-dark) .stat-card {
+      background: var(--surface-card);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    :host-context(.app-dark) .stat-card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    :host-context(.app-dark) .quick-link-card {
+      background: var(--surface-card);
+      border-color: var(--surface-border);
+    }
+
+    :host-context(.app-dark) .quick-link-card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      border-color: #10b981;
+    }
+
+    :host-context(.app-dark) .quick-link-icon.bg-blue-100 {
+      background: rgba(59, 130, 246, 0.2) !important;
+    }
+
+    :host-context(.app-dark) .quick-link-icon.bg-purple-100 {
+      background: rgba(168, 85, 247, 0.2) !important;
+    }
+
+    :host-context(.app-dark) .quick-link-icon.bg-orange-100 {
+      background: rgba(251, 146, 60, 0.2) !important;
+    }
+
+    :host-context(.app-dark) .quick-link-icon.bg-green-100 {
+      background: rgba(16, 185, 129, 0.2) !important;
+    }
+
+    :host-context(.app-dark) .quick-link-icon.text-blue-600 {
+      color: #60a5fa !important;
+    }
+
+    :host-context(.app-dark) .quick-link-icon.text-purple-600 {
+      color: #c084fc !important;
+    }
+
+    :host-context(.app-dark) .quick-link-icon.text-orange-600 {
+      color: #fb923c !important;
+    }
+
+    :host-context(.app-dark) .quick-link-icon.text-green-600 {
+      color: #34d399 !important;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .dashboard-page {
