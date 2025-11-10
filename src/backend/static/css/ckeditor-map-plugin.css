@@ -1,0 +1,293 @@
+/* static/css/ckeditor-map-plugin.css */
+
+/* Preview no editor */
+.ck-content .ck-map-embed-preview {
+    border: 2px dashed #4CAF50;
+    padding: 30px 20px;
+    margin: 20px 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8f5e9 100%);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ck-content .ck-map-embed-preview:hover {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: #2E7D32;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.ck-content .ck-map-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.ck-content .ck-map-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2E7D32;
+    margin-bottom: 5px;
+}
+
+.ck-content .ck-map-id {
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+}
+
+.ck-widget.ck-map-embed-preview.ck-widget_selected {
+    outline: 3px solid #4CAF50 !important;
+}
+
+/* Modal */
+.ck-map-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.ck-map-modal {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.ck-map-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ck-map-modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.ck-map-modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.ck-map-modal-close:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.ck-map-modal-body {
+    padding: 20px 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.ck-map-search {
+    margin-bottom: 16px;
+}
+
+.ck-map-search input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.ck-map-search input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.ck-map-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ck-map-item {
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    gap: 12px;
+}
+
+.ck-map-item:hover {
+    border-color: #4CAF50;
+    background: #f5f5f5;
+    transform: translateX(4px);
+}
+
+.ck-map-item-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+.ck-map-item-content {
+    flex: 1;
+}
+
+.ck-map-item-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.ck-map-item-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.ck-map-item-slug {
+    font-size: 13px;
+    color: #666;
+    font-family: monospace;
+}
+
+.ck-map-item-layers {
+    font-size: 12px;
+    color: #4CAF50;
+    background: #e8f5e9;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.ck-map-item-desc {
+    font-size: 13px;
+    color: #666;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+.ck-map-modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.ck-map-options {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.ck-map-options label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+}
+
+.ck-map-height {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ck-map-height label {
+    font-size: 13px;
+    color: #666;
+}
+
+.ck-map-height input {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    width: 120px;
+}
+
+.ck-map-modal-cancel {
+    padding: 10px 20px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.ck-map-modal-cancel:hover {
+    background: #e0e0e0;
+    color: #333;
+}
+
+@media (max-width: 600px) {
+    .ck-map-modal {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .ck-map-options {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .ck-map-modal-footer {
+        flex-direction: column;
+    }
+
+    .ck-map-modal-cancel {
+        width: 100%;
+    }
+}

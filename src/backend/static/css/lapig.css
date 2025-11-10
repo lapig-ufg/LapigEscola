@@ -1,0 +1,5 @@
+.module .ck-content h1,
+.module .ck-content h2,
+.module .ck-content h3 {
+    all: revert; /* remove heranças forçadas */
+}

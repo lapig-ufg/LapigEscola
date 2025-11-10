@@ -99,7 +99,7 @@ ROOT_URLCONF = 'lapig.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS':  [BASE_DIR.joinpath('nuxt-dist')],
+        'DIRS':  [BASE_DIR.joinpath('nuxt-dist'), BASE_DIR.joinpath('templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -162,83 +162,138 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 AWS_QUERYSTRING_AUTH = False
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'  # Optional for static files
-CKEDITOR_5_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 
 AWS_LOCATION = 'media'
 AWS_IMAGES_PATH = 'imagens/'
+AWS_STATIC_LOCATION = 'static'
+
+
+# ==================== MEDIA FILES (uploads) ====================
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{AWS_LOCATION}/'
+
+# ==================== STATIC FILES ====================
+
+# Em desenvolvimento, serve localmente
+if DEBUG:
+  # Arquivos estáticos locais
+  STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+  STATIC_URL = '/static/'
+  STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+  STATICFILES_DIRS = [
+    BASE_DIR.joinpath('nuxt-dist'), BASE_DIR.joinpath('static')
+  ]
+
+else:
+  # Em produção, usa S3/MinIO
+  STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+  STATIC_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{AWS_STATIC_LOCATION}/'
+  STATIC_ROOT = BASE_DIR.joinpath('staticfiles')
+
+  STATICFILES_DIRS = [
+    BASE_DIR.joinpath('nuxt-dist'), BASE_DIR.joinpath('static')
+  ]
+
+
+CKEDITOR_5_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# settings.py
 
 CKEDITOR_5_CONFIGS = {
-    'default': {
-        'uploadUrl': '/api/files/upload_file/',
-        'toolbar': {
-            'items': [
-                'heading',
-                '|',
-                'bold', 'italic', 'underline', 'strikethrough',
-                '|',
-                'alignment',
-                '|',
-                'bulletedList', 'numberedList', 'outdent', 'indent',
-                '|',
-                'blockQuote', 'link', 'imageUpload', 'mediaEmbed', 'insertTable',
-                '|',
-                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
-                '|',
-                'code', 'codeBlock',
-                '|',
-                'undo', 'redo'
-            ],
-            'shouldNotGroupWhenFull': True
-        },
-        'language': 'pt-br',
-        'image': {
-            'toolbar': [
-                'imageTextAlternative',
-                '|',
-                'imageStyle:alignLeft', 'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:alignBlock',
-                '|',
-                'toggleImageCaption',
-                '|',
-                'imageResize:25', 'imageResize:50', 'imageResize:75', 'imageResize:100'
-            ],
-            'upload': {
-                'types': ['jpeg', 'jpg', 'png', 'gif', 'webp'],
-                'headers': {
-                    'X-CSRFToken': 'csrftoken',  # Para proteção CSRF
-                }
-            }
-        },
-        'table': {
-            'contentToolbar': [
-                'tableColumn', 'tableRow', 'mergeTableCells',
-                'tableProperties', 'tableCellProperties'
-            ]
-        },
-        'mediaEmbed': {
-            'previewsInData': True
-        },
-        'link': {
-            'decorators': {
-                'isExternal': {
-                    'mode': 'manual',
-                    'label': 'Abre em nova aba',
-                    'attributes': {
-                        'target': '_blank',
-                        'rel': 'noopener noreferrer'
-                    }
-                }
-            }
-        },
-        'htmlSupport': {
-            'allow': [
-                {'name': 'div', 'classes': True},
-                {'name': 'span', 'classes': True}
-            ]
+  'default': {
+    'uploadUrl': '/api/files/upload_file/',
+    'toolbar': {
+      'items': [
+        'heading',
+        '|',
+        'bold', 'italic', 'underline', 'strikethrough',
+        '|',
+        'alignment',
+        '|',
+        'bulletedList', 'numberedList', 'outdent', 'indent',
+        '|',
+        'blockQuote', 'link', 'imageUpload', 'mediaEmbed', 'insertTable',
+        '|',
+        'insertMap',  # <-- Plugin de mapa em TODOS os editores
+        '|',
+        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+        '|',
+        'code', 'codeBlock',
+        '|',
+        'undo', 'redo'
+      ],
+      'shouldNotGroupWhenFull': True
+    },
+    'language': 'pt-br',
+
+    'image': {
+      'toolbar': [
+        'imageTextAlternative',
+        '|',
+        'imageStyle:alignLeft', 'imageStyle:alignRight',
+        'imageStyle:alignCenter', 'imageStyle:alignBlock',
+        '|',
+        'toggleImageCaption',
+        '|',
+        'imageResize:25', 'imageResize:50', 'imageResize:75', 'imageResize:100'
+      ],
+      'upload': {
+        'types': ['jpeg', 'jpg', 'png', 'gif', 'webp'],
+        'headers': {
+          'X-CSRFToken': 'csrftoken',
         }
-    }
+      }
+    },
+    'table': {
+      'contentToolbar': [
+        'tableColumn', 'tableRow', 'mergeTableCells',
+        'tableProperties', 'tableCellProperties'
+      ]
+    },
+    'mediaEmbed': {
+      'previewsInData': True
+    },
+    'link': {
+      'decorators': {
+        'isExternal': {
+          'mode': 'manual',
+          'label': 'Abre em nova aba',
+          'attributes': {
+            'target': '_blank',
+            'rel': 'noopener noreferrer'
+          }
+        }
+      }
+    },
+    'htmlSupport': {
+      'allow': [
+        {
+          'name': 'div',
+          'classes': ['map-embed'],
+          'attributes': True
+        }
+      ]
+    },
+  },
+
+  # Configuração sem o botão de mapa (para casos específicos)
+  'minimal': {
+    'toolbar': {
+      'items': [
+        'heading',
+        '|',
+        'bold', 'italic',
+        '|',
+        'link',
+        '|',
+        'bulletedList', 'numberedList',
+        '|',
+        'undo', 'redo'
+      ]
+    },
+    'language': 'pt-br',
+  }
 }
 
 
@@ -277,9 +332,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR.joinpath('nuxt-dist')]  # Assets do Nuxt
-STATIC_ROOT = BASE_DIR.joinpath('staticfiles')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

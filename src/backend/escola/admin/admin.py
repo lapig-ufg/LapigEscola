@@ -24,7 +24,7 @@ class PaginaEstaticaAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Bioma)
-admin.site.register(Layer)
+
 admin.site.register(Tag)
 
 
