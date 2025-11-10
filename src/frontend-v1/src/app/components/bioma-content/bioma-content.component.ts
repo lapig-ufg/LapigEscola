@@ -7,6 +7,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { MapEmbedDirective } from '@/directives/map-embed.directive';
 
 interface TabConfig {
   header: string;
@@ -18,7 +19,7 @@ interface TabConfig {
 @Component({
   selector: 'app-bioma-content',
   standalone: true,
-  imports: [CommonModule, Tabs, TabList, Tab, TabPanels, TabPanel],
+  imports: [CommonModule, Tabs, TabList, Tab, TabPanels, TabPanel, MapEmbedDirective],
   template: `
     <p-tabs *ngIf="visibleTabs.length > 0" [(value)]="activeTab">
       <p-tablist>
@@ -29,7 +30,7 @@ interface TabConfig {
 
       <p-tabpanels>
         <p-tabpanel *ngIf="hasConteudo" value="conteudo">
-          <div class="content-wrapper" [innerHTML]="textoContent"></div>
+          <div class="content-wrapper" appMapEmbed [innerHTML]="textoContent"></div>
         </p-tabpanel>
 
         <p-tabpanel *ngIf="hasImagens" value="imagens">

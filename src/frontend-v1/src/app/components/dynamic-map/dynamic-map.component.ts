@@ -3,15 +3,16 @@ import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, inject } fr
 import { CommonModule } from '@angular/common';
 import { MapService } from '@/services/map.service';
 import { DynamicMapService, MapData } from '@/services/dynamic-map.service';
+import { LayoutService } from '@/layout/service/layout.service';
 
 @Component({
   selector: 'app-dynamic-map',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="dynamic-map-wrapper">
+    <div class="dynamic-map-wrapper" [class.dark-theme]="isDarkTheme">
       <!-- Header -->
-      <div class="map-header" *ngIf="showHeader && mapData">
+      <div class="map-header" [ngClass]="'theme-' + headerTheme" *ngIf="showHeader && mapData">
         <h3 class="map-title">{{ mapData.titulo }}</h3>
         <p class="map-description" *ngIf="mapData.descricao">
           {{ mapData.descricao }}
@@ -48,20 +49,56 @@ import { DynamicMapService, MapData } from '@/services/dynamic-map.service';
       margin: 30px 0;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      background: white;
+      box-shadow: var(--card-shadow, 0 4px 20px rgba(0, 0, 0, 0.1));
+      background: var(--surface-card, white);
+      border: var(--sidebar-border, 1px solid var(--surface-border));
+      transition: all 0.3s ease;
     }
 
     .map-header {
-      background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
-      color: white;
       padding: 20px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* Tema Primary (padrão) */
+    .map-header.theme-primary {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-600) 100%);
+    }
+
+    /* Tema Secondary */
+    .map-header.theme-secondary {
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    }
+
+    /* Tema Success */
+    .map-header.theme-success {
+      background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    }
+
+    /* Tema Warning */
+    .map-header.theme-warning {
+      background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+      color: #212529;
+    }
+
+    /* Tema Danger */
+    .map-header.theme-danger {
+      background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%);
+    }
+
+    /* Tema Info */
+    .map-header.theme-info {
+      background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
     }
 
     .map-title {
       margin: 0 0 8px 0;
       font-size: 1.5rem;
       font-weight: 600;
+      color: inherit;
     }
 
     .map-description {
@@ -69,11 +106,21 @@ import { DynamicMapService, MapData } from '@/services/dynamic-map.service';
       font-size: 0.95rem;
       opacity: 0.95;
       line-height: 1.5;
+      color: inherit;
     }
 
     .map-layers-info {
       font-size: 0.9rem;
       opacity: 0.9;
+      color: inherit;
+    }
+
+    /* Adaptações específicas para tema warning */
+    .map-header.theme-warning .map-title,
+    .map-header.theme-warning .map-description,
+    .map-header.theme-warning .map-layers-info {
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      font-weight: 600;
     }
 
     .layers-count {
@@ -85,12 +132,13 @@ import { DynamicMapService, MapData } from '@/services/dynamic-map.service';
     .map-body {
       position: relative;
       min-height: 400px;
+      background: var(--surface-ground, var(--surface-100));
     }
 
     .map-container {
       width: 100%;
       height: 500px;
-      background: var(--surface-100);
+      background: var(--surface-ground, var(--surface-100));
     }
 
     .map-loading,
@@ -102,6 +150,7 @@ import { DynamicMapService, MapData } from '@/services/dynamic-map.service';
       height: 400px;
       text-align: center;
       padding: 20px;
+      background: var(--surface-ground, var(--surface-100));
     }
 
     .map-loading {
@@ -110,6 +159,44 @@ import { DynamicMapService, MapData } from '@/services/dynamic-map.service';
 
     .map-error {
       color: var(--text-color-secondary);
+    }
+
+    /* Dark Theme Adaptations */
+    .dynamic-map-wrapper.dark-theme {
+      box-shadow: var(--sidebar-shadow, none);
+      border: var(--sidebar-border, 1px solid var(--surface-border));
+    }
+
+    /* Dark Theme Headers */
+    .dynamic-map-wrapper.dark-theme .map-header.theme-primary {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-700) 100%);
+    }
+
+    .dynamic-map-wrapper.dark-theme .map-header.theme-secondary {
+      background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+    }
+
+    .dynamic-map-wrapper.dark-theme .map-header.theme-success {
+      background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
+    }
+
+    .dynamic-map-wrapper.dark-theme .map-header.theme-warning {
+      background: linear-gradient(135deg, #e0a800 0%, #d39e00 100%);
+    }
+
+    .dynamic-map-wrapper.dark-theme .map-header.theme-danger {
+      background: linear-gradient(135deg, #bd2130 0%, #a71e2a 100%);
+    }
+
+    .dynamic-map-wrapper.dark-theme .map-header.theme-info {
+      background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+    }
+
+    .dynamic-map-wrapper.dark-theme .map-body,
+    .dynamic-map-wrapper.dark-theme .map-container,
+    .dynamic-map-wrapper.dark-theme .map-loading,
+    .dynamic-map-wrapper.dark-theme .map-error {
+      background: var(--surface-ground);
     }
 
     @media (max-width: 768px) {
@@ -144,6 +231,7 @@ import { DynamicMapService, MapData } from '@/services/dynamic-map.service';
 export class DynamicMapComponent implements OnInit, OnDestroy {
   private readonly dynamicMapService = inject(DynamicMapService);
   private readonly mapService = inject(MapService);
+  private readonly layoutService = inject(LayoutService);
 
   @ViewChild('mapContainer') mapContainer?: ElementRef;
 
@@ -151,10 +239,16 @@ export class DynamicMapComponent implements OnInit, OnDestroy {
   @Input() mapId?: number;
   @Input() showHeader = true;
   @Input() height?: string;
+  @Input() headerTheme: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' = 'primary';
 
   mapData?: MapData;
   loading = false;
   error?: string;
+
+  // Computed property para detectar dark mode
+  get isDarkTheme(): boolean {
+    return this.layoutService.isDarkTheme() || false;
+  }
 
   ngOnInit(): void {
     this.loadMapData();

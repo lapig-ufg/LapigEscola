@@ -188,9 +188,13 @@ if DEBUG:
 
 else:
   # Em produção, usa S3/MinIO
-  STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
-  STATIC_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{AWS_STATIC_LOCATION}/'
-  STATIC_ROOT = BASE_DIR.joinpath('staticfiles')
+  #STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+  #STATIC_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{AWS_STATIC_LOCATION}/'
+  #STATIC_ROOT = BASE_DIR.joinpath('staticfiles')
+
+  STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+  STATIC_URL = '/static/'
+  STATIC_ROOT = BASE_DIR / 'staticfiles'
 
   STATICFILES_DIRS = [
     BASE_DIR.joinpath('nuxt-dist'), BASE_DIR.joinpath('static')

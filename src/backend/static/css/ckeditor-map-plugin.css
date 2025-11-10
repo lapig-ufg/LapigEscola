@@ -254,6 +254,48 @@
     width: 120px;
 }
 
+.ck-map-align {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ck-map-align label {
+    font-size: 13px;
+    color: #666;
+}
+
+.ck-map-align select {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    width: 140px;
+    background: white;
+    cursor: pointer;
+}
+
+.ck-map-theme {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ck-map-theme label {
+    font-size: 13px;
+    color: #666;
+}
+
+.ck-map-theme select {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    width: 160px;
+    background: white;
+    cursor: pointer;
+}
+
 .ck-map-modal-cancel {
     padding: 10px 20px;
     background: #f5f5f5;

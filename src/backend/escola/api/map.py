@@ -9,19 +9,21 @@ from ..schema.map import MapSchema, MapEmbedSchema, MapListResponse
 router = Router(tags=["Maps"])
 
 
-@router.get("/{slug}", response=MapSchema, summary="Buscar mapa por slug")
-def get_map_by_slug(request, slug: str):
+@router.get("/list-for-editor", response=List[MapEmbedSchema], summary="Listar mapas para CKEditor")
+def list_maps_for_editor(request):
   """
-  Retorna dados completos de um mapa pelo slug.
-  Usado pelo componente DynamicMapComponent no Angular.
+  Lista todos os mapas disponíveis de forma simplificada.
+  Usado pelo plugin do CKEditor para mostrar opções de mapas.
   """
-  map_obj = get_object_or_404(
-    Map.objects.prefetch_related(
-      'maplayer_set__layer'
-    ).filter(is_published=True),
-    slug=slug
+  maps = Map.objects.filter(
+    is_published=True
+  ).annotate(
+    layers_count=Count('layers')
+  ).order_by('titulo').values(
+    'id', 'slug', 'titulo', 'descricao', 'layers_count'
   )
-  return map_obj
+
+  return list(maps)
 
 
 @router.get("/id/{map_id}", response=MapSchema, summary="Buscar mapa por ID")
@@ -39,21 +41,19 @@ def get_map_by_id(request, map_id: int):
   return map_obj
 
 
-@router.get("/list-for-editor", response=List[MapEmbedSchema], summary="Listar mapas para CKEditor")
-def list_maps_for_editor(request):
+@router.get("/{slug}", response=MapSchema, summary="Buscar mapa por slug")
+def get_map_by_slug(request, slug: str):
   """
-  Lista todos os mapas disponíveis de forma simplificada.
-  Usado pelo plugin do CKEditor para mostrar opções de mapas.
+  Retorna dados completos de um mapa pelo slug.
+  Usado pelo componente DynamicMapComponent no Angular.
   """
-  maps = Map.objects.filter(
-    is_published=True
-  ).annotate(
-    layers_count=Count('layers')
-  ).order_by('titulo').values(
-    'id', 'slug', 'titulo', 'descricao', 'layers_count'
+  map_obj = get_object_or_404(
+    Map.objects.prefetch_related(
+      'maplayer_set__layer'
+    ).filter(is_published=True),
+    slug=slug
   )
-
-  return list(maps)
+  return map_obj
 
 
 @router.get("", response=MapListResponse, summary="Listar todos os mapas")

@@ -4,7 +4,9 @@
 # Stage 1: Build Nuxt.js frontend
 FROM node:20-slim AS frontend-builder
 WORKDIR /app/frontend-v1
-
+ENV API_BASE=https://escola.lapig.iesa.ufg.br/api/v1/
+ENV APPTITLE='Lapig Na Escola'
+ENV APPSUBTITLE='Projeto Lapig na Escola'
 # Install build dependencies for native modules
 RUN apt-get update && apt-get install -y \
     python3 \
@@ -17,7 +19,8 @@ COPY src/frontend-v1/package*.json ./
 RUN npm install
 
 COPY src/frontend-v1/ ./
-RUN npx ng build --configuration stagin
+RUN npx ng build --configuration production
+
 
 # Stage 2: Python dependencies and Django setup
 FROM python:3.12-slim AS backend-builder

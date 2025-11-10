@@ -15,11 +15,12 @@ import { ConteudoService } from '@/services';
 import { Curiosidade, RecursoPedagogico } from '@/models';
 import { environment } from '@/environments/environment';
 import { DownloadButtonComponent, PdfViewerComponent, ImageViewerComponent } from '@/components';
+import { MapEmbedDirective } from '@/directives/map-embed.directive';
 
 @Component({
   selector: 'app-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, DownloadButtonComponent, PdfViewerComponent, ImageViewerComponent],
+  imports: [CommonModule, RouterModule, DownloadButtonComponent, PdfViewerComponent, ImageViewerComponent, MapEmbedDirective],
   template: `
     <div class="detail-container">
 
@@ -89,7 +90,7 @@ import { DownloadButtonComponent, PdfViewerComponent, ImageViewerComponent } fro
         </div>
 
         <!-- Main Content (HTML from CKEditor) -->
-        <div class="content-wrapper" [innerHTML]="sanitizedContent"></div>
+        <div class="content-wrapper" appMapEmbed [innerHTML]="sanitizedContent"></div>
 
         <!-- Tags (só para curiosidade) -->
         <div *ngIf="isCuriosidade && getCuriosidadeTags() && getCuriosidadeTags()!.length > 0" class="tags-section">
