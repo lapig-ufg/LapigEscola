@@ -3,7 +3,7 @@
 # Stage 1: Build Nuxt.js frontend
 # Stage 1: Build Nuxt.js frontend
 FROM node:20-slim AS frontend-builder
-WORKDIR /app/frontend
+WORKDIR /app/frontend-v1
 ENV API_BASE=https://escola.lapig.iesa.ufg.br/api/v1/
 ENV APPTITLE='Lapig Na Escola'
 ENV APPSUBTITLE='Projeto Lapig na Escola'
@@ -14,13 +14,13 @@ RUN apt-get update && apt-get install -y \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app/frontend
-COPY src/frondend/package*.json ./
+WORKDIR /app/frontend-v1
+COPY src/frontend-v1/package*.json ./
+RUN npm install
 
-RUN npm ci
+COPY src/frontend-v1/ ./
+RUN npx ng build --configuration production
 
-COPY src/frondend/ ./
-RUN npm run generate
 
 # Stage 2: Python dependencies and Django setup
 FROM python:3.12-slim AS backend-builder
@@ -66,7 +66,7 @@ COPY src/ ./src/
 COPY pyproject.toml ./
 
 # Copy built frontend from first stage
-COPY --from=frontend-builder /app/backend/nuxt-dist ./src/backend/nuxt-dist/
+COPY --from=frontend-builder /app/frontend-v1/dist/apollo-ng/browser ./src/backend/nuxt-dist/
 
 # Set up Django
 WORKDIR /app/src/backend
@@ -76,7 +76,7 @@ RUN mkdir -p media static logs \
     && chown -R app:app /app
 
 # Collect static files
-#RUN python manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput
 
 # Switch to non-root user
 USER app

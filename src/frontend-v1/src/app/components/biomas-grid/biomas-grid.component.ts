@@ -11,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { BiomaService } from '@/services';
 import { BiomaSchema } from '@/models';
+import { environment } from '@/environments/environment'
 
 /**
  * Interface estendida para incluir campos opcionais do bioma
@@ -35,15 +36,16 @@ const BIOMA_DESCRIPTIONS: Record<string, string> = {
 /**
  * Imagens locais dos biomas brasileiros
  */
-const BIOMA_IMAGES: Record<string, string> = {
-  'amazonia': '/layout/images/biomas/amazonia.webp',
-  'cerrado': '/layout/images/biomas/cerrado.webp',
-  'mata-atlantica': '/layout/images/biomas/mapa-atlantica.webp',
-  'caatinga': '/layout/images/biomas/caatinga.webp',
-  'pampa': '/layout/images/biomas/pampa.webp',
-  'pantanal': '/layout/images/biomas/pantanal.webp'
-};
+const prefix = environment.assetPrefix ? '/static/' : '/';
 
+const BIOMA_IMAGES: Record<string, string> = {
+  'amazonia': `${prefix}layout/images/biomas/amazonia.webp`,
+  'cerrado': `${prefix}layout/images/biomas/cerrado.webp`,
+  'mata-atlantica': `${prefix}layout/images/biomas/mata-atlantica.webp`,
+  'caatinga': `${prefix}layout/images/biomas/caatinga.webp`,
+  'pampa': `${prefix}layout/images/biomas/pampa.webp`,
+  'pantanal': `${prefix}layout/images/biomas/pantanal.webp`,
+};
 @Component({
   selector: 'app-biomas-grid',
   standalone: true,
@@ -361,7 +363,7 @@ export class BiomasGridComponent implements OnInit {
       return bioma.imagem;
     }
 
-    return BIOMA_IMAGES[bioma.slug] || '/layout/images/biomas/placeholder.webp';
+    return BIOMA_IMAGES[bioma.slug] || `${prefix}layout/images/biomas/placeholder.webp`;
   }
 
   getBiomaLink(bioma: BiomaDisplay): string[] {

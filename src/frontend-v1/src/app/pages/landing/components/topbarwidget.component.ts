@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
-
+import { AssetService } from '../../../../services/asset.service'
 @Component({
     selector: 'topbar-widget',
     imports: [CommonModule, RouterModule, StyleClassModule, ButtonModule, RippleModule],
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
         <div class="flex items-center justify-between relative lg:static py-12 px-6 mx-0 md:px-16 lg:px-20 lg:py-12 lg:mx-20">
             <a class="cursor-pointer" (click)="router.navigate(['/landing'])">
                 <img
-                    src="/layout/images/lapig_escola.png"
+                    [src]="asset.url('layout/images/lapig_escola.png')"
                     alt="LapigEscola"
                     class="h-8 w-auto"
                 />
@@ -59,7 +59,11 @@ import { CommonModule } from '@angular/common';
     `
 })
 export class TopbarWidget {
-    constructor(public router: Router) {}
+    constructor(
+        public router: Router,
+        public asset: AssetService
+
+    ) {}
 
     navigate(id: any) {
         this.smoothScroll(id);

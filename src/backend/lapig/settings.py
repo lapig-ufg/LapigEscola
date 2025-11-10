@@ -79,7 +79,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = []
 
 # Origem principal
-django_host = os.environ.get('DJANGO_HOST', 'http://localhost:8185')
+django_host = os.environ.get('DJANGO_HOST', 'http://localhost:8183')
 CORS_ALLOWED_ORIGINS.append(django_host)
 
 # Origens adicionais
@@ -99,7 +99,7 @@ ROOT_URLCONF = 'lapig.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS':  [BASE_DIR.joinpath('nuxt-dist/public')],
+        'DIRS':  [BASE_DIR.joinpath('nuxt-dist')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -278,7 +278,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR.joinpath('nuxt-dist/public/static')]  # Assets do Nuxt
+STATICFILES_DIRS = [BASE_DIR.joinpath('nuxt-dist')]  # Assets do Nuxt
 STATIC_ROOT = BASE_DIR.joinpath('staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

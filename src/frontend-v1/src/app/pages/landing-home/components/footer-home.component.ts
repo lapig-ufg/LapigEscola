@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PaginaService } from '@/services';
 import { MenuItemSchema } from '@/models';
-
+import { AssetService } from '../../../../services/asset.service'
 @Component({
   selector: 'footer-home',
   standalone: true,
@@ -20,7 +20,7 @@ import { MenuItemSchema } from '@/models';
         <div class="footer-top">
           <div class="footer-about">
             <img
-              src="/layout/images/lapig_escola.png"
+              [src]="asset.url('layout/images/lapig_escola.png')"
               alt="LapigEscola"
               class="footer-logo"
             />
@@ -252,13 +252,15 @@ import { MenuItemSchema } from '@/models';
 })
 export class FooterHomeComponent implements OnInit {
   private readonly paginaService = inject(PaginaService);
-
+  public readonly asset = inject(AssetService);
   currentYear = new Date().getFullYear();
   iniciativaItems: MenuItemSchema[] = [];
 
   ngOnInit(): void {
     this.loadIniciativaItems();
   }
+
+
 
   private loadIniciativaItems(): void {
     this.paginaService.getMenu().subscribe({

@@ -8,5 +8,6 @@ export const environment = {
   production: true,
   apiBaseUrl: 'https://escola.lapig.iesa.ufg.br/api/v1',
   appTitle: 'LapigEscola',
-  appSubtitle: 'Educação Ambiental e Biomas Brasileiros'
+  appSubtitle: 'Educação Ambiental e Biomas Brasileiros',
+    assetPrefix: '/static/',
 };

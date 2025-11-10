@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { AppMenu } from './app.menu';
 import { LayoutService } from '@/layout/service/layout.service';
 import { RouterModule } from '@angular/router';
-
+import { AssetService } from '../../../services/asset.service'
 @Component({
     selector: '[app-sidebar]',
     standalone: true,
@@ -15,7 +15,7 @@ import { RouterModule } from '@angular/router';
         <div class="sidebar-header">
             <a [routerLink]="['/']" class="app-logo">
                 <img
-                    src="/layout/images/lapig_escola.png"
+                    [src]="asset.url('layout/images/lapig_escola.png')"
                     alt="LapigEscola"
                     class="logo-image"
                 />
@@ -39,6 +39,7 @@ export class AppSidebar {
     constructor(
         public layoutService: LayoutService,
         public el: ElementRef,
+        public asset: AssetService
     ) {}
 
     onMouseEnter() {

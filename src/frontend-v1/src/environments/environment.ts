@@ -6,8 +6,9 @@
  */
 
 export const environment = {
-  production: false,
-  apiBaseUrl: '/api/v1',
-  appTitle: 'LapigEscola',
-  appSubtitle: 'Educação Ambiental e Biomas Brasileiros'
+    production: false,
+    apiBaseUrl: '/api/v1',
+     appTitle: 'LapigEscolaDEV',
+    appSubtitle: 'Educação Ambiental e Biomas Brasileiros',
+    assetPrefix: '/',
 };

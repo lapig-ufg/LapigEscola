@@ -11,6 +11,7 @@ import { RippleModule } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
 import { PaginaService } from '@/services';
 import { MenuItemSchema } from '@/models';
+import { AssetService } from '../../../../services/asset.service';
 
 @Component({
   selector: 'topbar-home',
@@ -22,7 +23,7 @@ import { MenuItemSchema } from '@/models';
         <!-- Logo -->
         <a class="topbar-logo" (click)="scrollToTop()">
           <img
-            src="/layout/images/lapig_escola.png"
+            [src]="asset.url('layout/images/lapig_escola.png')"
             alt="LapigEscola"
             class="logo-image"
           />
@@ -290,6 +291,7 @@ import { MenuItemSchema } from '@/models';
 export class TopbarHomeComponent implements OnInit {
   private readonly paginaService = inject(PaginaService);
   private readonly router = inject(Router);
+   public readonly asset = inject(AssetService);
 
   menuItems: MenuItemSchema[] = [];
 
