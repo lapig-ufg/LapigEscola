@@ -57,7 +57,6 @@ import { LayoutService } from '@/layout/service/layout.service';
 
     .map-header {
       padding: 20px;
-      color: white;
       position: relative;
       overflow: hidden;
       transition: all 0.3s ease;

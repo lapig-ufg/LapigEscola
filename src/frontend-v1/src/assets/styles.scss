@@ -508,12 +508,7 @@
             color: var(--text-color-secondary);
         }
 
-        /* Map Components - Dark Theme Integration */
-        .dynamic-map-wrapper-generated {
-            background: var(--surface-card) !important;
-            border: var(--sidebar-border, 1px solid var(--surface-border)) !important;
-            box-shadow: var(--sidebar-shadow, none) !important;
-        }
+
 
         /* Map embeds inside CKEditor content also need dark mode styling */
         .map-embed {
@@ -531,12 +526,9 @@
     .content-wrapper {
         /* Map Components - Light Theme */
         .dynamic-map-wrapper-generated {
-            background: var(--surface-card, white);
-            border: var(--sidebar-border, 1px solid var(--surface-border));
-            box-shadow: var(--card-shadow, 0 4px 20px rgba(0, 0, 0, 0.1));
-            border-radius: 12px;
+
             overflow: hidden;
-            transition: all 0.3s ease;
+
         }
 
         .map-embed {
