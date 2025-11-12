@@ -51,6 +51,7 @@ class LayerAdmin(OrderedModelAdmin):
     total_criadas = total_atualizadas = total_encontradas = total_invalidas = 0
 
     for wms_url in geoservers:
+      workspace = wms_url.split('/')[-2]
       self.message_user(request, f"🔍 Atualizando camadas do WMS: {wms_url}", messages.INFO)
       try:
         response = requests.get(wms_url, params={
@@ -96,24 +97,29 @@ class LayerAdmin(OrderedModelAdmin):
 
           layers_encontradas += 1
 
-          layer_url = (
-              f"{wms_url}?service=WMS"
-              f"&version=1.1.0"
-              f"&request=GetMap"
-              f"&layers={layer_name}"
-              f"&srs=EPSG:4674"
-              f"&format=image/png"
-              f"&transparent=true"
-          )
+          layer_url = layer_url = f"{wms_url}"
           metadata = {
             'layer_name': layer_name,
+            'workspace':workspace,
             'wms_url': wms_url,
-            'source': 'GeoServer'
+            'source': 'GeoServer',
+            'params': {                      
+              'service':'WMS',
+              'version':'1.3.0',
+              'request':'GetMap',   # <-- NOVO: parâmetros que o OpenLayers usará
+                'LAYERS': layer_name,           # camada completa
+                'FORMAT': 'image/png',
+                'TILED': True
+            },
+            'legend_url': (
+                f"{wms_url}?service=WMS&version=1.1.1&request=GetLegendGraphic"
+                f"&format=image/png&layer={layer_name}"
+            )
           }
 
-          existing = Layer.objects.filter(metadata__layer_name=layer_name).first()
+          existing = Layer.objects.filter(title=f"{workspace}:{layer_title}").first()
           if existing:
-            existing.title = layer_title
+            existing.title = f"{workspace}:{layer_title}"
             existing.description = layer_description
             existing.url = layer_url
             existing.layer_type = 'WMS'
@@ -123,7 +129,7 @@ class LayerAdmin(OrderedModelAdmin):
             layers_atualizadas += 1
           else:
             Layer.objects.create(
-              title=layer_title,
+              title=f"{workspace}:{layer_title}",
               description=layer_description,
               url=layer_url,
               layer_type='WMS',
