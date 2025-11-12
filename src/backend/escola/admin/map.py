@@ -96,7 +96,15 @@ class LayerAdmin(OrderedModelAdmin):
 
           layers_encontradas += 1
 
-          layer_url = f"{wms_url}?service=WMS&version=1.3.0&request=GetMap&layers={layer_name}"
+          layer_url = (
+              f"{wms_url}?service=WMS"
+              f"&version=1.1.0"
+              f"&request=GetMap"
+              f"&layers={layer_name}"
+              f"&srs=EPSG:4674"
+              f"&format=image/png"
+              f"&transparent=true"
+          )
           metadata = {
             'layer_name': layer_name,
             'wms_url': wms_url,
