@@ -20,7 +20,7 @@ router = Router()
 
 @router.get("/list", response=List[BiomaSchema])
 def list_biomas(request):
-  biomas = Bioma.objects.all().prefetch_related(
+  biomas = Bioma.objects.all().order_by('nome') .prefetch_related(
     Prefetch('temas', queryset=Tema.objects.order_by('bioma', 'order'))
   )
 
