@@ -1,0 +1,936 @@
+<!-- templates/admin/base_site.html -->
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/ckeditor-map-plugin.css' %}">
+<link rel="stylesheet" href="{% static 'css/lapig.css' %}">
+<style>
+    /* Estilos para o botão de inserir mapa - Compatível com Django Admin */
+    .map-insert-controls {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 12px;
+        margin: 8px 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        clear: both !important;
+    }
+
+    .map-insert-controls label {
+        display: block !important;
+        margin: 0 0 10px 0 !important;
+        font-weight: 600 !important;
+        color: var(--body-fg, #333) !important;
+        font-size: 13px !important;
+        line-height: 1.2 !important;
+    }
+
+    .map-buttons {
+        display: flex !important;
+        gap: 8px !important;
+        margin-bottom: 8px !important;
+        flex-wrap: wrap !important;
+    }
+
+    .insert-map-btn,
+    .toggle-html-btn {
+        display: inline-block !important;
+        border: 1px solid var(--button-bg, #79aec8) !important;
+        padding: 8px 16px !important;
+        border-radius: 4px !important;
+        cursor: pointer !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        text-decoration: none !important;
+        transition: all 0.15s ease-in-out !important;
+        font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif !important;
+        flex: 1 !important;
+        text-align: center !important;
+    }
+
+    .insert-map-btn {
+        background: var(--button-bg, #79aec8) !important;
+        color: var(--button-fg, #fff) !important;
+    }
+
+    .toggle-html-btn {
+        background: var(--body-bg, #fff) !important;
+        color: var(--body-fg, #333) !important;
+    }
+
+    .insert-map-btn:hover {
+        background: var(--button-hover-bg, #609ab6) !important;
+        border-color: var(--button-hover-bg, #609ab6) !important;
+    }
+
+    .toggle-html-btn:hover {
+        background: var(--darkened-bg, #f5f5f5) !important;
+        border-color: var(--button-bg, #79aec8) !important;
+    }
+
+    .insert-map-btn:focus,
+    .toggle-html-btn:focus {
+        outline: 2px solid var(--focus-color, #79aec8) !important;
+        outline-offset: -2px !important;
+    }
+
+    .map-status {
+        display: block !important;
+        color: var(--body-quiet-color, #666) !important;
+        font-size: 12px !important;
+        font-style: italic !important;
+        margin-top: 4px !important;
+        min-height: 16px !important;
+        font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif !important;
+    }
+
+    .map-status.success {
+        color: var(--success-fg, #28a745) !important;
+        font-weight: 500 !important;
+    }
+
+    .map-status.error {
+        color: var(--error-fg, #ba2121) !important;
+        font-weight: 500 !important;
+    }
+
+    /* Garante que o editor fique abaixo do botão */
+    .ck-editor-container {
+        display: block !important;
+        width: 100% !important;
+        clear: both !important;
+        margin-top: 8px !important;
+    }
+
+    /* Estilos para .map-embed dentro do CKEditor - Comportamento como imagem */
+    .ck-content .map-embed {
+        display: inline-block !important;
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%) !important;
+        border: 2px solid #2196f3 !important;
+        border-radius: 8px !important;
+        padding: 12px 16px !important;
+        margin: 16px 8px !important;
+        font-family: "Roboto", Arial, sans-serif !important;
+        font-size: 14px !important;
+        color: #1976d2 !important;
+        position: relative !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        min-width: 200px !important;
+        max-width: 400px !important;
+        text-align: center !important;
+        vertical-align: top !important;
+
+        /* Comportamento como imagem - permite posicionamento */
+        float: none !important;
+        clear: none !important;
+
+        /* NÃO editável e NÃO movível */
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+
+        /* Bloqueia edição */
+        pointer-events: none !important;
+
+        /* Espaçamento adequado para texto ao redor */
+        line-height: 1 !important;
+    }
+
+    /* Variações de posicionamento - 50% para esquerda/direita */
+    .ck-content .map-embed.align-left {
+        float: left !important;
+        margin: 16px 16px 16px 0 !important;
+        clear: left !important;
+        width: 50% !important;
+        max-width: 50% !important;
+    }
+
+    .ck-content .map-embed.align-right {
+        float: right !important;
+        margin: 16px 0 16px 16px !important;
+        clear: right !important;
+        width: 50% !important;
+        max-width: 50% !important;
+    }
+
+    .ck-content .map-embed.align-center {
+        display: block !important;
+        margin: 20px auto !important;
+        float: none !important;
+        clear: both !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .ck-content .map-embed:hover {
+        background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%) !important;
+        border-color: #1976d2 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4) !important;
+        z-index: 10 !important;
+    }
+
+    /* Estado de seleção no CKEditor */
+    .ck-content .map-embed.ck-widget_selected,
+    .ck-content .map-embed:focus {
+        outline: 3px solid #2196f3 !important;
+        outline-offset: 2px !important;
+        box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4) !important;
+    }
+
+    /* Indicador de movimento */
+    .ck-content .map-embed::after {
+        content: "Slug: " attr(data-map-slug) " • Clique e arraste para mover" !important;
+        font-size: 12px !important;
+        opacity: 0.8 !important;
+        font-style: italic !important;
+        display: block !important;
+        margin-top: 4px !important;
+    }
+
+    .ck-content .map-embed::before {
+        content: "🗺️ " attr(data-map-title) !important;
+        font-weight: 600 !important;
+        display: block !important;
+        margin-bottom: 4px !important;
+    }
+
+    .ck-content .map-embed::after {
+        content: "Slug: " attr(data-map-slug) !important;
+        font-size: 12px !important;
+        opacity: 0.8 !important;
+        font-style: italic !important;
+    }
+
+    /* Estilos para modo HTML - textarea */
+    textarea.django_ckeditor_5 {
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+        line-height: 1.5 !important;
+        tab-size: 2 !important;
+    }
+
+    /* Apollo Theme Integration - Dark Mode */
+    :root.app-dark .ck-content .map-embed,
+    .app-dark .ck-content .map-embed,
+    @media (prefers-color-scheme: dark) {
+        .map-insert-controls {
+            background: var(--surface-card, #2d2d2d);
+            border-color: var(--surface-border, #404040);
+        }
+
+        .ck-content .map-embed {
+            background: var(--surface-card, #263238) !important;
+            border-color: var(--primary-color, #4fc3f7) !important;
+            color: var(--text-color, #81d4fa) !important;
+            box-shadow: var(--sidebar-shadow, none) !important;
+        }
+
+        .ck-content .map-embed:hover {
+            background: var(--surface-hover, #37474f) !important;
+            border-color: var(--primary-color, #29b6f6) !important;
+        }
+    }
+
+    /* Apollo Theme Integration - Light Mode */
+    :root .ck-content .map-embed {
+        background: linear-gradient(135deg, var(--surface-card, #e3f2fd) 0%, var(--surface-100, #bbdefb) 100%) !important;
+        border-color: var(--primary-color, #2196f3) !important;
+        color: var(--text-color, #1976d2) !important;
+        box-shadow: var(--card-shadow, 0 4px 20px rgba(0, 0, 0, 0.1)) !important;
+    }
+
+    :root .ck-content .map-embed:hover {
+        background: linear-gradient(135deg, var(--surface-100, #bbdefb) 0%, var(--surface-200, #90caf9) 100%) !important;
+        border-color: var(--primary-600, #1976d2) !important;
+    }
+</style>
+{% endblock %}
+
+
+
+{% block footer %}
+{{ block.super }}
+<script>
+(function() {
+    'use strict';
+
+    console.log('🚀 Inicializando sistema de inserção de mapas...');
+
+    // Armazena instâncias do CKEditor
+    window.editorInstances = window.editorInstances || {};
+
+    /**
+     * Detecta editores CKEditor e adiciona botões de inserir mapa
+     */
+    function addMapButtonsToCKEditors() {
+        // Busca especificamente por form-rows que são campos de texto CKEditor
+        const textFormRows = document.querySelectorAll('.form-row.field-texto');
+
+        console.log('📝 Encontradas', textFormRows.length, 'form-rows com field-texto');
+
+        textFormRows.forEach((formRow, index) => {
+            // Verifica se contém um ck-editor-container
+            const ckEditorContainer = formRow.querySelector('.ck-editor-container');
+            if (!ckEditorContainer) {
+                console.log('⏭️ Form-row não tem ck-editor-container');
+                return;
+            }
+
+            // Verifica se já tem o botão dentro da form-row
+            if (formRow.querySelector('.map-insert-controls')) {
+                console.log(`⏭️ Botão já existe na form-row`);
+                return;
+            }
+
+            // Busca o textarea
+            let textarea = ckEditorContainer.querySelector('textarea[name]');
+            if (!textarea) {
+                textarea = ckEditorContainer.querySelector('textarea[data-django-ckeditor5]');
+            }
+            if (!textarea) {
+                textarea = ckEditorContainer.querySelector('textarea');
+            }
+
+            if (!textarea) {
+                console.warn('⚠️ Textarea não encontrada no .ck-editor-container');
+                return;
+            }
+
+            const fieldName = textarea.name || textarea.id || `editor_${index}`;
+            console.log('✨ Adicionando botão de mapa para campo:', fieldName);
+
+            // Cria o container do botão
+            const mapControls = document.createElement('div');
+            mapControls.className = 'map-insert-controls';
+            mapControls.innerHTML = `
+                <label>🗺️ Inserir Mapa:</label>
+                <div class="map-buttons">
+                    <button type="button" class="insert-map-btn" data-field="${fieldName}">
+                        <span>Selecionar Mapa</span>
+                    </button>
+                    <button type="button" class="toggle-html-btn" data-field="${fieldName}">
+                        <span>📝 Ver HTML</span>
+                    </button>
+                </div>
+                <span class="map-status" id="map-status-${index}"></span>
+            `;
+
+            // Encontra o .flex-container que contém o ck-editor-container
+            const flexContainer = ckEditorContainer.closest('.flex-container');
+
+            if (flexContainer) {
+                // Insere o botão ANTES do .flex-container
+                flexContainer.parentNode.insertBefore(mapControls, flexContainer);
+                console.log('✅ Botão inserido antes do .flex-container');
+            } else {
+                // Fallback: inserir antes do ck-editor-container
+                const parentOfCkEditor = ckEditorContainer.parentNode;
+                parentOfCkEditor.insertBefore(mapControls, ckEditorContainer);
+                console.log('✅ Botão inserido antes do .ck-editor-container (fallback)');
+            }
+
+            // Adiciona eventos aos botões
+            const insertButton = mapControls.querySelector('.insert-map-btn');
+            const toggleButton = mapControls.querySelector('.toggle-html-btn');
+            const statusSpan = mapControls.querySelector('.map-status');
+
+            if (insertButton && statusSpan) {
+                insertButton.addEventListener('click', function() {
+                    handleMapInsertion(textarea, statusSpan, fieldName, index);
+                });
+            } else {
+                console.warn('⚠️ Botão ou status span não encontrado:', { insertButton, statusSpan });
+            }
+
+            if (toggleButton) {
+                toggleButton.addEventListener('click', function() {
+                    handleHtmlToggle(ckEditorContainer, toggleButton);
+                });
+            }
+
+            // Armazena referência do editor para sincronização no save
+            editorReferences.set(fieldName, {
+                textarea: textarea,
+                container: ckEditorContainer,
+                fieldName: fieldName
+            });
+
+            // Registra callback para quando o editor estiver pronto (Django CKEditor 5)
+            const editorId = textarea.id || textarea.name || fieldName;
+            if (window.ckeditorRegisterCallback && typeof window.ckeditorRegisterCallback === 'function') {
+                window.ckeditorRegisterCallback(editorId, function(editor) {
+                    console.log(`🎯 Callback registrado para editor ${editorId}`);
+                    // Armazena a instância para uso posterior
+                    window.editorInstances = window.editorInstances || {};
+                    window.editorInstances[editorId] = editor;
+                });
+            }
+        });
+    }
+
+    /**
+     * Busca a instância do CKEditor para um textarea específico usando a API correta do Django CKEditor 5
+     */
+    function getCKEditorInstance(textarea, fieldName) {
+        const editorId = textarea.id || textarea.name || fieldName;
+
+        // 1. MÉTODO CORRETO: Usa window.editors (Django CKEditor 5)
+        if (window.editors && window.editors[editorId]) {
+            console.log(`✅ Editor encontrado via window.editors para ${editorId}`);
+            return window.editors[editorId];
+        }
+
+        // 2. Busca alternativa caso o ID seja diferente
+        if (window.editors) {
+            for (const [key, editor] of Object.entries(window.editors)) {
+                if (key.includes(fieldName) || fieldName.includes(key)) {
+                    console.log(`✅ Editor encontrado via busca alternativa: ${key} para ${editorId}`);
+                    return editor;
+                }
+            }
+        }
+
+        // 3. Busca no container .ck-editor-container (backup)
+        const ckContainer = textarea.closest('.ck-editor-container');
+        if (ckContainer) {
+            const ckEditor = ckContainer.querySelector('.ck-editor');
+            if (ckEditor && ckEditor.ckeditorInstance) {
+                console.log(`✅ Editor encontrado via .ck-editor-container para ${editorId}`);
+                return ckEditor.ckeditorInstance;
+            }
+        }
+
+        // 4. Lista todos os editores disponíveis para debug
+        if (window.editors) {
+            console.log('📝 Editores disponíveis:', Object.keys(window.editors));
+        }
+
+        console.warn(`⚠️ Editor CKEditor não encontrado para ${editorId}. Usando inserção direta no textarea.`);
+        return null;
+    }
+
+    /**
+     * Manipula a inserção do mapa
+     */
+    async function handleMapInsertion(textarea, statusSpan, fieldName, index) {
+        try {
+            statusSpan.textContent = 'Carregando mapas...';
+            statusSpan.className = 'map-status';
+
+            // Tenta diferentes endpoints para buscar mapas
+            let response;
+            const endpoints = [
+                '/api/maps/list-for-editor',
+                '/api/v1/maps/list-for-editor',
+                '/escola/api/maps/list-for-editor'
+            ];
+
+            let maps = null;
+            for (const endpoint of endpoints) {
+                try {
+                    response = await fetch(endpoint);
+                    if (response.ok) {
+                        maps = await response.json();
+                        console.log(`✅ Mapas carregados via ${endpoint}:`, maps);
+                        break;
+                    }
+                } catch (e) {
+                    console.warn(`Endpoint ${endpoint} falhou:`, e);
+                    continue;
+                }
+            }
+
+            if (!maps || maps.length === 0) {
+                statusSpan.textContent = 'Nenhum mapa disponível';
+                statusSpan.className = 'map-status error';
+                return;
+            }
+
+            statusSpan.textContent = '';
+
+            // Abre o seletor de mapas
+            const selectedMap = await openMapSelector(maps);
+
+            if (selectedMap) {
+                // Sempre usar inserção direta no textarea com sincronização do CKEditor
+                // Esta é a abordagem mais confiável para o Django CKEditor 5
+                insertMapIntoTextarea(textarea, selectedMap);
+
+                statusSpan.textContent = `✓ Mapa "${selectedMap.titulo}" inserido!`;
+                statusSpan.className = 'map-status success';
+
+                setTimeout(() => {
+                    statusSpan.textContent = '';
+                    statusSpan.className = 'map-status';
+                }, 3000);
+            }
+
+        } catch (error) {
+            console.error('Erro ao inserir mapa:', error);
+            statusSpan.textContent = '✗ Erro ao carregar mapas';
+            statusSpan.className = 'map-status error';
+            setTimeout(() => {
+                statusSpan.textContent = '';
+                statusSpan.className = 'map-status';
+            }, 3000);
+        }
+    }
+
+
+    /**
+     * Cria o HTML do mapa com parágrafo para continuar escrevendo
+     */
+    function createMapHtml(mapData) {
+        const attrs = [
+            `data-map-slug="${mapData.slug || ''}"`,
+            `data-map-id="${mapData.id || ''}"`,
+            `data-map-title="${escapeHtml(mapData.titulo || 'Mapa')}"`,
+            `data-show-header="${mapData.showHeader !== false}"`,
+            `data-header-theme="${mapData.theme || 'primary'}"`,
+            `contenteditable="false"`  // Bloqueia edição
+        ];
+
+        if (mapData.height) {
+            attrs.push(`data-height="${mapData.height}"`);
+        }
+
+        // Adiciona classe de alinhamento se especificada
+        let classes = 'map-embed';
+        if (mapData.align) {
+            classes += ` ${mapData.align}`;
+        }
+
+        // Retorna mapa + parágrafo vazio para continuar escrevendo
+        return `<div class="${classes}" ${attrs.join(' ')}></div><p></p>`;
+    }
+
+    /**
+     * Insere o mapa diretamente no textarea (fallback)
+     */
+    function insertMapIntoTextarea(textarea, mapData) {
+        const mapHtml = createMapHtml(mapData);
+
+        const currentValue = textarea.value || '';
+        const cursorPos = textarea.selectionStart || currentValue.length;
+
+        const newValue = currentValue.slice(0, cursorPos) + '\n' + mapHtml + '\n' + currentValue.slice(cursorPos);
+        textarea.value = newValue;
+
+        // Define a nova posição do cursor
+        const newCursorPos = cursorPos + mapHtml.length + 2;
+        try {
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+        } catch (e) {
+            // Ignora erro de seleção em alguns navegadores
+        }
+
+        // MÉTODO MAIS DIRETO: Força a sincronização imediatamente
+        // Dispara eventos que o Django CKEditor 5 reconhece
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        textarea.dispatchEvent(new Event('change', { bubbles: true }));
+
+        // Tenta usar a API correta do Django CKEditor 5
+        const editorId = textarea.id || textarea.name;
+        const editor = getCKEditorInstance(textarea, editorId);
+
+        if (editor && editor.setData) {
+            try {
+                // Usa a instância correta do editor
+                editor.setData(textarea.value);
+                console.log('✅ CKEditor 5 atualizado via API correta do Django');
+            } catch (e) {
+                console.warn('⚠️ Erro ao atualizar CKEditor via API:', e);
+                // Fallback para método DOM
+                tryDOMUpdate();
+            }
+        } else {
+            // Fallback para método DOM se a API não estiver disponível
+            tryDOMUpdate();
+        }
+
+        function tryDOMUpdate() {
+            const ckContainer = textarea.closest('.ck-editor-container');
+            if (ckContainer) {
+                const editorDiv = ckContainer.querySelector('.ck-editor');
+                if (editorDiv && editorDiv.ckeditorInstance) {
+                    try {
+                        editorDiv.ckeditorInstance.setData(textarea.value);
+                        console.log('✅ CKEditor 5 atualizado via DOM fallback');
+                    } catch (e) {
+                        console.warn('⚠️ Fallback DOM também falhou:', e);
+                    }
+                }
+            }
+        }
+
+        // Marca o formulário como modificado (Django Admin)
+        if (window.django && window.django.admin) {
+            window.django.admin.initialFormData = null;
+        }
+
+        console.log('✅ Mapa inserido no textarea com sincronização forçada');
+    }
+
+    /**
+     * Abre modal de seleção de mapas
+     */
+    function openMapSelector(maps) {
+        return new Promise((resolve) => {
+            const overlay = document.createElement('div');
+            overlay.className = 'ck-map-modal-overlay';
+
+            const modal = document.createElement('div');
+            modal.className = 'ck-map-modal';
+            modal.innerHTML = `
+                <div class="ck-map-modal-header">
+                    <h3>Selecionar Mapa</h3>
+                    <button class="ck-map-modal-close" type="button" aria-label="Fechar">&times;</button>
+                </div>
+                <div class="ck-map-modal-body">
+                    <div class="ck-map-search">
+                        <input type="text" placeholder="Buscar mapa..." id="mapSearchInput">
+                    </div>
+                    <div class="ck-map-list" id="mapList"></div>
+                </div>
+                <div class="ck-map-modal-footer">
+                    <div class="ck-map-options">
+                        <label>
+                            <input type="checkbox" id="showHeaderCheckbox" checked>
+                            Mostrar cabeçalho
+                        </label>
+                        <div class="ck-map-height">
+                            <label for="mapHeight">Altura:</label>
+                            <input type="text" id="mapHeight" placeholder="ex: 400px">
+                        </div>
+                        <div class="ck-map-align">
+                            <label for="mapAlign">Posição:</label>
+                            <select id="mapAlign">
+                                <option value="">Inline (padrão)</option>
+                                <option value="align-left">Esquerda</option>
+                                <option value="align-center">Centro</option>
+                                <option value="align-right">Direita</option>
+                            </select>
+                        </div>
+                        <div class="ck-map-theme">
+                            <label for="mapTheme">Tema do Cabeçalho:</label>
+                            <select id="mapTheme">
+                                <option value="primary">Primary (Padrão)</option>
+                                <option value="success">Success (Verde)</option>
+                                <option value="info">Info (Azul)</option>
+                                <option value="warning">Warning (Amarelo)</option>
+                                <option value="danger">Danger (Vermelho)</option>
+                                <option value="secondary">Secondary (Cinza)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="button" class="ck-map-modal-cancel">Cancelar</button>
+                </div>
+            `;
+
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+
+            const mapList = modal.querySelector('#mapList');
+
+            const renderMaps = (filteredMaps) => {
+                mapList.innerHTML = filteredMaps.map(map => `
+                    <div class="ck-map-item" data-slug="${map.slug}" data-id="${map.id}" data-title="${escapeHtml(map.titulo)}">
+                        <div class="ck-map-item-icon">🗺️</div>
+                        <div class="ck-map-item-content">
+                            <div class="ck-map-item-title">${escapeHtml(map.titulo)}</div>
+                            <div class="ck-map-item-meta">
+                                <span class="ck-map-item-slug">${escapeHtml(map.slug)}</span>
+                                ${map.layers_count ? `<span class="ck-map-item-layers">${map.layers_count} camadas</span>` : ''}
+                            </div>
+                            ${map.descricao ? `<div class="ck-map-item-desc">${escapeHtml(map.descricao)}</div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                mapList.querySelectorAll('.ck-map-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const showHeader = modal.querySelector('#showHeaderCheckbox').checked;
+                        const height = modal.querySelector('#mapHeight').value.trim();
+                        const align = modal.querySelector('#mapAlign').value;
+                        const theme = modal.querySelector('#mapTheme').value;
+
+                        resolve({
+                            slug: item.dataset.slug,
+                            id: item.dataset.id,
+                            titulo: item.dataset.title,
+                            showHeader: showHeader,
+                            height: height || null,
+                            align: align || null,
+                            theme: theme || 'primary'
+                        });
+                        document.body.removeChild(overlay);
+                    });
+                });
+            };
+
+            renderMaps(maps);
+
+            // Busca
+            const searchInput = modal.querySelector('#mapSearchInput');
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = maps.filter(map =>
+                    map.titulo.toLowerCase().includes(term) ||
+                    map.slug.toLowerCase().includes(term) ||
+                    (map.descricao && map.descricao.toLowerCase().includes(term))
+                );
+                renderMaps(filtered);
+            });
+
+            // Fechar
+            const close = () => {
+                document.body.removeChild(overlay);
+                resolve(null);
+            };
+
+            modal.querySelector('.ck-map-modal-close').addEventListener('click', close);
+            modal.querySelector('.ck-map-modal-cancel').addEventListener('click', close);
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) close();
+            });
+        });
+    }
+
+    /**
+     * Alterna entre modo visual e HTML no CKEditor
+     */
+    function handleHtmlToggle(ckEditorContainer, toggleButton) {
+        const editor = ckEditorContainer.querySelector('.ck-editor');
+        const textarea = ckEditorContainer.querySelector('textarea');
+
+        if (!editor || !textarea) {
+            console.warn('⚠️ Editor ou textarea não encontrado para toggle HTML');
+            return;
+        }
+
+        const isHtmlMode = ckEditorContainer.classList.contains('html-mode');
+
+        if (isHtmlMode) {
+            // Volta para modo visual
+            editor.style.display = 'block';
+            textarea.style.display = 'none';
+            ckEditorContainer.classList.remove('html-mode');
+            toggleButton.innerHTML = '<span>📝 Ver HTML</span>';
+
+            // Sincroniza o conteúdo do textarea para o editor
+            const editorInstance = getCKEditorInstance(textarea, textarea.name);
+            if (editorInstance && editorInstance.setData) {
+                editorInstance.setData(textarea.value);
+            }
+        } else {
+            // Vai para modo HTML
+            editor.style.display = 'none';
+            textarea.style.display = 'block';
+            textarea.style.width = '100%';
+            textarea.style.height = '400px';
+            textarea.style.fontFamily = "'Consolas', 'Monaco', 'Courier New', monospace";
+            textarea.style.fontSize = '14px';
+            textarea.style.border = '1px solid #ddd';
+            textarea.style.padding = '15px';
+            textarea.style.lineHeight = '1.6';
+            textarea.style.backgroundColor = '#f8f9fa';
+            textarea.style.borderRadius = '4px';
+            textarea.style.resize = 'vertical';
+            ckEditorContainer.classList.add('html-mode');
+            toggleButton.innerHTML = '<span>👁️ Ver Visual</span>';
+
+            // Sincroniza o conteúdo do editor para o textarea
+            const editorInstance = getCKEditorInstance(textarea, textarea.name);
+            if (editorInstance && editorInstance.getData) {
+                textarea.value = editorInstance.getData();
+            }
+        }
+    }
+
+    /**
+     * Escapa HTML
+     */
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    /**
+     * Observa mudanças no DOM para detectar novos editores
+     */
+    function observeNewEditors() {
+        const observer = new MutationObserver(function(mutations) {
+            let shouldCheck = false;
+
+            mutations.forEach(function(mutation) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1 && (
+                        (node.classList?.contains('form-row') && node.classList?.contains('field-texto')) ||
+                        node.classList?.contains('ck-editor-container') ||
+                        node.querySelector?.('.form-row.field-texto') ||
+                        node.querySelector?.('.ck-editor-container')
+                    )) {
+                        shouldCheck = true;
+                    }
+                });
+            });
+
+            if (shouldCheck) {
+                console.log('🔄 Novos form-rows.field-texto detectados, adicionando botões...');
+                setTimeout(addMapButtonsToCKEditors, 500);
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    // Flag para controlar inicialização
+    let initialized = false;
+
+    // Armazena referências dos editores para sincronização
+    let editorReferences = new Map();
+
+    /**
+     * Força a sincronização usando a forma padrão do Django CKEditor 5
+     */
+    function forceSync() {
+        console.log('🔄 Forçando sincronização do Django CKEditor 5...');
+
+        // Método 1: Usa o evento padrão do Django CKEditor 5
+        editorReferences.forEach((editorRef, fieldName) => {
+            const { textarea } = editorRef;
+
+            // Dispara eventos que o Django CKEditor 5 escuta
+            textarea.dispatchEvent(new Event('change', { bubbles: true }));
+            textarea.dispatchEvent(new Event('input', { bubbles: true }));
+            textarea.dispatchEvent(new Event('blur', { bubbles: true }));
+        });
+
+        // Método 2: Força updateSourceElement se disponível
+        if (window.CKEDITOR && window.CKEDITOR.instances) {
+            Object.keys(window.CKEDITOR.instances).forEach(instanceName => {
+                const instance = window.CKEDITOR.instances[instanceName];
+                if (instance.updateElement) {
+                    instance.updateElement();
+                    console.log(`✅ updateElement chamado para ${instanceName}`);
+                }
+            });
+        }
+
+        // Método 3: Para CKEditor 5, força a sincronização via evento personalizado
+        document.dispatchEvent(new CustomEvent('django-ckeditor5-sync'));
+
+        console.log('✅ Sincronização forçada');
+    }
+
+    /**
+     * Setup simples de sincronização
+     */
+    function setupSimpleFormSync() {
+        // Intercepta TODOS os cliques de botões de save do Django Admin
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('input[name="_save"], input[name="_continue"], input[name="_addanother"], button[type="submit"]')) {
+                console.log('💾 Botão de save detectado, sincronizando...');
+                setTimeout(() => forceSync(), 50);
+            }
+        });
+
+        // Também intercepta o submit do formulário como backup
+        document.addEventListener('submit', function(e) {
+            if (e.target.matches('form')) {
+                console.log('💾 Submit detectado, sincronizando...');
+                forceSync();
+            }
+        });
+
+        console.log('✅ Sincronização simples configurada');
+    }
+
+    /**
+     * Bloqueia edição dentro dos mapas e configura navegação
+     */
+    function setupMapBlockBehavior() {
+        // Bloqueia edição dentro dos mapas
+        document.addEventListener('keydown', function(e) {
+            if (e.target.closest('.ck-content .map-embed')) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        });
+
+        document.addEventListener('input', function(e) {
+            if (e.target.closest('.ck-content .map-embed')) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        });
+
+        console.log('✅ Edição dos mapas bloqueada');
+    }
+
+    /**
+     * Inicialização principal
+     */
+    function init() {
+        if (initialized) {
+            console.log('⏭️ Sistema já inicializado, pulando...');
+            return;
+        }
+
+        console.log('🔧 Iniciando sistema de mapas para CKEditor...');
+        initialized = true;
+
+        // Executa após o DOM estar pronto
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(() => {
+                    addMapButtonsToCKEditors();
+                    observeNewEditors();
+                    setupSimpleFormSync();
+                    setupMapBlockBehavior();
+                }, 500);
+            });
+        } else {
+            setTimeout(() => {
+                addMapButtonsToCKEditors();
+                observeNewEditors();
+                setupSimpleFormSync();
+                setupMapBlockBehavior();
+            }, 500);
+        }
+
+        // Também tenta após um tempo maior para editores que carregam mais tarde
+        setTimeout(() => {
+            addMapButtonsToCKEditors();
+        }, 2000);
+
+        console.log('✅ Sistema de inserção de mapas inicializado');
+    }
+
+    // Hook para django-ckeditor-5 se disponível
+    if (window.django && window.django.ckeditor5) {
+        window.django.ckeditor5.onReady = function() {
+            console.log('🎯 CKEditor5 pronto, adicionando botões de mapa...');
+            setTimeout(addMapButtonsToCKEditors, 100);
+        };
+    }
+
+    // Inicia o sistema
+    init();
+})();
+</script>
+{% endblock %}

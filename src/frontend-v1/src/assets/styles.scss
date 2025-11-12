@@ -327,6 +327,42 @@
     max-width: 100% !important;
 }
 
+/* Map Alignment - Similar behavior to images */
+.content-wrapper .dynamic-map-wrapper-generated.align-left,
+.content-wrapper .align-left {
+    float: left !important;
+    margin-right: 1.5rem !important;
+    margin-bottom: 1rem !important;
+    margin-left: 0 !important;
+    clear: left !important;
+    width: 50% !important;
+    max-width: 50% !important;
+}
+
+.content-wrapper .dynamic-map-wrapper-generated.align-right,
+.content-wrapper .align-right {
+    float: right !important;
+    margin-left: 1.5rem !important;
+    margin-bottom: 1rem !important;
+    margin-right: 0 !important;
+    clear: right !important;
+    width: 50% !important;
+    max-width: 50% !important;
+}
+
+.content-wrapper .dynamic-map-wrapper-generated.align-center,
+.content-wrapper .align-center {
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 1.5rem !important;
+    margin-top: 1.5rem !important;
+    float: none !important;
+    clear: both !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
 /* Text alignment */
 .content-wrapper .text-left {
     text-align: left;
@@ -372,6 +408,18 @@
         margin: 1rem auto;
         display: block;
         max-width: 100% !important;
+    }
+
+    /* Maps should also stack on mobile */
+    .content-wrapper .dynamic-map-wrapper-generated.align-left,
+    .content-wrapper .dynamic-map-wrapper-generated.align-right,
+    .content-wrapper .align-left,
+    .content-wrapper .align-right {
+        float: none !important;
+        margin: 1rem auto !important;
+        display: block !important;
+        max-width: 100% !important;
+        clear: both !important;
     }
 }
 
@@ -458,6 +506,36 @@
         .tag {
             background: var(--surface-100);
             color: var(--text-color-secondary);
+        }
+
+
+
+        /* Map embeds inside CKEditor content also need dark mode styling */
+        .map-embed {
+            background: var(--surface-card) !important;
+            border-color: var(--surface-border) !important;
+            color: var(--text-color) !important;
+            box-shadow: var(--card-shadow, none) !important;
+        }
+    }
+}
+
+/* ===== Apollo Theme Integration for Maps ===== */
+/* Light Theme Variables */
+:root {
+    .content-wrapper {
+        /* Map Components - Light Theme */
+        .dynamic-map-wrapper-generated {
+
+            overflow: hidden;
+
+        }
+
+        .map-embed {
+            background: var(--surface-card, white);
+            border-color: var(--primary-color, #4CAF50);
+            color: var(--text-color);
+            box-shadow: var(--card-shadow, 0 2px 8px rgba(0, 0, 0, 0.1));
         }
     }
 }

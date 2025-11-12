@@ -1,0 +1,178 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/ckeditor-map-plugin.css' %}">
+{% endblock %}
+
+{% block field_sets %}
+
+
+{{ block.super }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const insertMapBtn = document.getElementById('insertMapBtn');
+    const mapStatus = document.getElementById('mapStatus');
+
+    insertMapBtn.addEventListener('click', async function() {
+        try {
+            mapStatus.textContent = 'Carregando mapas...';
+
+            const response = await fetch('/api/v1/maps/list-for-editor');
+            if (!response.ok) throw new Error('Erro ao carregar mapas');
+
+            const maps = await response.json();
+
+            if (!maps || maps.length === 0) {
+                mapStatus.textContent = 'Nenhum mapa disponível';
+                return;
+            }
+
+            mapStatus.textContent = '';
+            const selectedMap = await openMapSelector(maps);
+
+            if (selectedMap) {
+                insertMapIntoEditor(selectedMap);
+                mapStatus.textContent = `Mapa "${selectedMap.titulo}" inserido!`;
+                setTimeout(() => mapStatus.textContent = '', 3000);
+            }
+
+        } catch (error) {
+            console.error('Erro:', error);
+            mapStatus.textContent = 'Erro ao carregar mapas';
+            setTimeout(() => mapStatus.textContent = '', 3000);
+        }
+    });
+
+    function openMapSelector(maps) {
+        return new Promise((resolve) => {
+            const overlay = document.createElement('div');
+            overlay.className = 'ck-map-modal-overlay';
+
+            const modal = document.createElement('div');
+            modal.className = 'ck-map-modal';
+            modal.innerHTML = `
+                <div class="ck-map-modal-header">
+                    <h3>Selecionar Mapa</h3>
+                    <button class="ck-map-modal-close" type="button">&times;</button>
+                </div>
+                <div class="ck-map-modal-body">
+                    <div class="ck-map-search">
+                        <input type="text" placeholder="Buscar mapa..." id="mapSearchInput">
+                    </div>
+                    <div class="ck-map-list" id="mapList"></div>
+                </div>
+                <div class="ck-map-modal-footer">
+                    <div class="ck-map-options">
+                        <label>
+                            <input type="checkbox" id="showHeaderCheckbox" checked>
+                            Mostrar cabeçalho
+                        </label>
+                        <div class="ck-map-height">
+                            <label for="mapHeight">Altura:</label>
+                            <input type="text" id="mapHeight" placeholder="400px" value="400px">
+                        </div>
+                    </div>
+                    <button type="button" class="ck-map-modal-cancel">Cancelar</button>
+                </div>
+            `;
+
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+
+            const mapList = modal.querySelector('#mapList');
+            const renderMaps = (filteredMaps) => {
+                mapList.innerHTML = filteredMaps.map(map => `
+                    <div class="ck-map-item" data-slug="${map.slug}" data-id="${map.id}" data-title="${escapeHtml(map.titulo)}">
+                        <div class="ck-map-item-icon">🗺️</div>
+                        <div class="ck-map-item-content">
+                            <div class="ck-map-item-title">${escapeHtml(map.titulo)}</div>
+                            <div class="ck-map-item-meta">
+                                <span class="ck-map-item-slug">${escapeHtml(map.slug)}</span>
+                                ${map.layers_count ? `<span class="ck-map-item-layers">${map.layers_count} camadas</span>` : ''}
+                            </div>
+                            ${map.descricao ? `<div class="ck-map-item-desc">${escapeHtml(map.descricao)}</div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                mapList.querySelectorAll('.ck-map-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const showHeader = modal.querySelector('#showHeaderCheckbox').checked;
+                        const height = modal.querySelector('#mapHeight').value.trim() || '400px';
+
+                        resolve({
+                            slug: item.dataset.slug,
+                            id: item.dataset.id,
+                            titulo: item.dataset.title,
+                            showHeader: showHeader,
+                            height: height
+                        });
+                        document.body.removeChild(overlay);
+                    });
+                });
+            };
+
+            renderMaps(maps);
+
+            const searchInput = modal.querySelector('#mapSearchInput');
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = maps.filter(map =>
+                    map.titulo.toLowerCase().includes(term) ||
+                    map.slug.toLowerCase().includes(term) ||
+                    (map.descricao && map.descricao.toLowerCase().includes(term))
+                );
+                renderMaps(filtered);
+            });
+
+            const close = () => {
+                document.body.removeChild(overlay);
+                resolve(null);
+            };
+
+            modal.querySelector('.ck-map-modal-close').addEventListener('click', close);
+            modal.querySelector('.ck-map-modal-cancel').addEventListener('click', close);
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) close();
+            });
+
+            // Foca no input de busca
+            searchInput.focus();
+        });
+    }
+
+    function insertMapIntoEditor(mapData) {
+        const mapHtml = `
+<div class="map-embed"
+     data-map-slug="${mapData.slug}"
+     data-map-id="${mapData.id}"
+     data-map-title="${mapData.titulo}"
+     data-show-header="${mapData.showHeader}"
+     data-height="${mapData.height}">
+</div>
+<br>
+        `;
+
+        // Encontra o textarea do CKEditor
+        const textarea = document.querySelector('textarea[data-django-ckeditor5]');
+        if (textarea) {
+            // Insere no final do conteúdo atual
+            const currentContent = textarea.value || '';
+            textarea.value = currentContent + mapHtml;
+
+            // Dispara evento de change para o CKEditor detectar
+            textarea.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+});
+</script>
+{% endblock %}

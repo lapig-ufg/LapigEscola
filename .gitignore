@@ -256,6 +256,7 @@ media
 .idea/**/libraries
 
 # File-based project format
+scr/backend/staticfiles/
 *.iws
 
 # IntelliJ

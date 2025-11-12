@@ -11,11 +11,12 @@ import { Title, Meta, DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PaginaService } from '@/services';
 import { PaginaEstatica } from '@/models';
 import { environment } from '@/environments/environment';
+import { MapEmbedDirective } from '@/directives/map-embed.directive';
 
 @Component({
   selector: 'app-static-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MapEmbedDirective],
   template: `
     <div class="static-page-container">
       <!-- Loading State -->
@@ -43,7 +44,7 @@ import { environment } from '@/environments/environment';
           <img [src]="pageData.imagem" [alt]="pageData.titulo" />
         </div>
 
-        <div class="content-wrapper" [innerHTML]="sanitizedContent"></div>
+        <div class="content-wrapper" appMapEmbed [innerHTML]="sanitizedContent"></div>
       </div>
     </div>
   `,
