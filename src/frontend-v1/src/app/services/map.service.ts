@@ -108,11 +108,8 @@ export class MapService {
    * Cria camada WMS
    */
   private createWMSLayer(config: Layer): TileLayer<any> {
-    const params: any = {
-      LAYERS: config.metadata?.['LAYERS'] || 'default',
-      TILED: true
-    };
-
+    const params: any = config.metadata?.['params'] || { LAYERS: 'default', TILED: true };
+    
     const source = new TileWMS({
       url: config.url,
       params: params,
