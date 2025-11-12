@@ -6,6 +6,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
         <base href="/" />
 
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XRLYBPBSBF"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XRLYBPBSBF', {
+                send_page_view: false,
+                anonymize_ip: true
+            });
+        </script>
+
         <!-- Primary Meta Tags -->
         <title>LapigEscola - Educação Ambiental e Biomas Brasileiros</title>
         <meta name="title" content="LapigEscola - Educação Ambiental e Biomas Brasileiros" />
@@ -23,7 +35,7 @@
         <meta name="msapplication-TileColor" content="#10b981" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
+        <meta name="mobile-web-app-capable" content="yes">
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://escola.lapig.iesa.ufg.br/" />

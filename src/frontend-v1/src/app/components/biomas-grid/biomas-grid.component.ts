@@ -11,7 +11,8 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { BiomaService } from '@/services';
 import { BiomaSchema } from '@/models';
-import { environment } from '@/environments/environment'
+import { environment } from '@/environments/environment';
+import { AnalyticsService } from '@/core/services/analytics.service';
 
 /**
  * Interface estendida para incluir campos opcionais do bioma
@@ -102,6 +103,7 @@ const BIOMA_IMAGES: Record<string, string> = {
                     label="Explorar"
                     icon="pi pi-arrow-right"
                     [routerLink]="getBiomaLink(bioma)"
+                    (click)="onExploreBioma(bioma)"
                     [outlined]="true"
                     styleClass="w-full"
                   />
@@ -323,6 +325,7 @@ const BIOMA_IMAGES: Record<string, string> = {
 })
 export class BiomasGridComponent implements OnInit {
   private readonly biomaService = inject(BiomaService);
+  private readonly analyticsService = inject(AnalyticsService);
 
   biomas: BiomaDisplay[] = [];
   loading = true;
@@ -336,11 +339,36 @@ export class BiomasGridComponent implements OnInit {
       next: (data: BiomaSchema[]) => {
         this.biomas = data as BiomaDisplay[];
         this.loading = false;
+
+        // Rastreia visualização do grid de biomas
+        this.analyticsService.trackEvent({
+          action: 'view_biomas_grid',
+          category: 'Biomas',
+          label: `${this.biomas.length} biomas carregados`
+        });
       },
       error: (err: any) => {
         console.error('Erro ao carregar biomas:', err);
         this.loading = false;
+
+        // Rastreia erro ao carregar biomas
+        this.analyticsService.trackError(
+          `Erro ao carregar lista de biomas: ${err.message || 'Erro desconhecido'}`,
+          'BiomasGridComponent',
+          'medium'
+        );
       }
+    });
+  }
+
+  /**
+   * Rastreia clique em explorar bioma
+   */
+  onExploreBioma(bioma: BiomaDisplay): void {
+    this.analyticsService.trackBiomaInteraction({
+      bioma_slug: bioma.slug,
+      bioma_name: bioma.nome,
+      action: 'explore'
     });
   }
 

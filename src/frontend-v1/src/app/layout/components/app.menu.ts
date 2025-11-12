@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { AppMenuitem } from './app.menuitem';
 import { BiomaService, PaginaService } from '@/services';
 import { BiomaSchema, MenuItemSchema } from '@/models';
+import { AnalyticsService } from '@/core/services/analytics.service';
 
 @Component({
     selector: 'app-menu',
@@ -31,6 +32,7 @@ import { BiomaSchema, MenuItemSchema } from '@/models';
 export class AppMenu implements OnInit {
     private readonly biomaService = inject(BiomaService);
     private readonly paginaService = inject(PaginaService);
+    private readonly analyticsService = inject(AnalyticsService);
 
     model: any[] = [];
     loading = true;
@@ -50,11 +52,32 @@ export class AppMenu implements OnInit {
         ]).then(([biomas, menuItems]) => {
             this.buildMenu(biomas || [], menuItems || []);
             this.loading = false;
+
+            // Rastreia carregamento bem-sucedido do menu
+            this.analyticsService.trackEvent({
+                action: 'menu_loaded',
+                category: 'Navegação',
+                label: `${biomas?.length || 0} biomas, ${this.getTotalTemas(biomas || [])} temas`
+            });
         }).catch(error => {
             console.error('Erro ao carregar menu:', error);
             this.buildFallbackMenu();
             this.loading = false;
+
+            // Rastreia erro ao carregar menu
+            this.analyticsService.trackError(
+                `Erro ao carregar menu: ${error.message || 'Erro desconhecido'}`,
+                'AppMenu',
+                'high'
+            );
         });
+    }
+
+    /**
+     * Calcula total de temas de todos os biomas
+     */
+    private getTotalTemas(biomas: BiomaSchema[]): number {
+        return biomas.reduce((total, bioma) => total + (bioma.temas?.length || 0), 0);
     }
 
     /**

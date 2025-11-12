@@ -7,6 +7,7 @@ import { AppSidebar } from './app.sidebar';
 import { LayoutService } from '@/layout/service/layout.service';
 import { AppConfigurator } from './app.configurator';
 import { AppProfileSidebar } from './app.profilesidebar';
+import { AnalyticsService } from '@/core/services/analytics.service';
 
 @Component({
     selector: 'app-layout',
@@ -46,8 +47,12 @@ export class AppLayout {
     constructor(
         public layoutService: LayoutService,
         public renderer: Renderer2,
-        public router: Router
+        public router: Router,
+        private analyticsService: AnalyticsService
     ) {
+        // Inicializa rastreamento automático de navegação
+        this.analyticsService.initializePageTracking();
+
         this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
             if (!this.menuOutsideClickListener) {
                 this.menuOutsideClickListener = this.renderer.listen('document', 'click', (event) => {

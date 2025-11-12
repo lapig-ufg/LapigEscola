@@ -3,11 +3,12 @@
  * Container com tabs dinâmicas para exibir diferentes tipos de conteúdo de um tema
  */
 
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MapEmbedDirective } from '@/directives/map-embed.directive';
+import { AnalyticsService } from '@/core/services/analytics.service';
 
 interface TabConfig {
   header: string;
@@ -21,7 +22,7 @@ interface TabConfig {
   standalone: true,
   imports: [CommonModule, Tabs, TabList, Tab, TabPanels, TabPanel, MapEmbedDirective],
   template: `
-    <p-tabs *ngIf="visibleTabs.length > 0" [(value)]="activeTab">
+    <p-tabs *ngIf="visibleTabs.length > 0" [(value)]="activeTab" (valueChange)="onTabChange($event)">
       <p-tablist>
         <p-tab *ngFor="let tab of visibleTabs" [value]="tab.value">
           {{ tab.header }}
@@ -81,6 +82,9 @@ export class BiomaContentComponent implements OnChanges {
   @Input() curiosidadesContent?: any;
   @Input() pedagogiaContent?: any;
 
+  private readonly analyticsService = inject(AnalyticsService);
+  private readonly sanitizer = inject(DomSanitizer);
+
   textoContent?: SafeHtml;
   visibleTabs: TabConfig[] = [];
   activeTab = 'conteudo';
@@ -105,14 +109,28 @@ export class BiomaContentComponent implements OnChanges {
     return !!this.pedagogiaContent;
   }
 
-  constructor(private sanitizer: DomSanitizer) {}
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['texto'] && this.texto) {
       this.textoContent = this.sanitizer.bypassSecurityTrustHtml(this.texto);
     }
 
     this.updateVisibleTabs();
+  }
+
+  /**
+   * Rastreia mudança de tab pelo usuário
+   */
+  onTabChange(tabValue: string | number | undefined): void {
+    if (!tabValue) return;
+
+    const tabValueStr = String(tabValue);
+    const tabName = this.visibleTabs.find(t => t.value === tabValueStr)?.header || tabValueStr;
+
+    this.analyticsService.trackEvent({
+      action: 'tab_change',
+      category: 'Conteúdo',
+      label: tabName
+    });
   }
 
   private updateVisibleTabs(): void {
@@ -154,6 +172,13 @@ export class BiomaContentComponent implements OnChanges {
     // Define primeira tab visível como ativa
     if (this.visibleTabs.length > 0) {
       this.activeTab = this.visibleTabs[0].value;
+    } else {
+      // Rastreia quando não há conteúdo disponível
+      this.analyticsService.trackEvent({
+        action: 'no_content_available',
+        category: 'Conteúdo',
+        label: 'Tema sem conteúdo'
+      });
     }
   }
 }
