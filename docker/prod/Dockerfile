@@ -45,6 +45,12 @@ RUN uv sync --frozen --no-dev
 # Stage 3: Production runtime
 FROM python:3.12-slim AS production
 
+ARG GIT_COMMIT=unknown
+ARG BUILD_DATE=unknown
+
+ENV GIT_COMMIT=$GIT_COMMIT \
+    BUILD_DATE=$BUILD_DATE
+
 # Install runtime system dependencies
 RUN apt-get update && apt-get install -y \
     libpq5 \
